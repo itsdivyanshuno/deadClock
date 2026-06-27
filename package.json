@@ -1,12 +1,12 @@
 {
-  "name": "vibe2ship-app",
-  "version": "0.1.0",
+  "name": "deadclock",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

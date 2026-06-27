@@ -8,6 +8,7 @@ import { ChatView } from "@/components/chat/chat-view";
 import { TasksView } from "@/components/tasks/tasks-view";
 import { GoalsView } from "@/components/goals/goals-view";
 import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
+import { CommandPalette, useCommandPalette } from "@/components/shared/command-palette";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 type View = "chat" | "tasks" | "goals" | "dashboard" | "settings";
@@ -21,6 +22,8 @@ export default function Home() {
   const [hydrated, setHydrated] = useState(false);
   const [view, setView] = useState<View>("chat");
   const [darkMode, setDarkMode] = useState(false);
+
+  const commandPalette = useCommandPalette(setView);
 
   /* ── Hydrate from DB on first mount ─────────────────────────── */
   useEffect(() => {
@@ -121,11 +124,11 @@ export default function Home() {
         p.map((g) =>
           g.id === goalId
             ? {
-                ...g,
-                milestones: g.milestones.map((m, i) =>
-                  i === idx ? { ...m, done: !m.done } : m
-                ),
-              }
+              ...g,
+              milestones: g.milestones.map((m, i) =>
+                i === idx ? { ...m, done: !m.done } : m
+              ),
+            }
             : g
         )
       );
@@ -150,6 +153,11 @@ export default function Home() {
   /* ── Render ─────────────────────────────────────────────────── */
   return (
     <TooltipProvider delay={300}>
+      <CommandPalette
+        open={commandPalette.open}
+        onOpenChange={commandPalette.setOpen}
+        onNavigate={setView}
+      />
       <AppShell
         view={view}
         onViewChange={setView}
