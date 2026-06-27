@@ -136,10 +136,21 @@ function GreetingState({ onQuickStart }: { onQuickStart: (msg: string) => void }
 
 export function ChatView({ messages, input, loading, onInputChange, onSend, onQuickStart }: ChatViewProps) {
   const endRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [textareaRows, setTextareaRows] = useState(1);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  // Auto-grow textarea as the user types (max ~6 rows / max-h-32)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    const lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+    const newRows = Math.min(Math.max(1, Math.ceil(el.scrollHeight / lineHeight)), 6);
+    setTextareaRows(newRows);
+  }, [input]);
 
   const handleSubmit = useCallback(
     (e: React.FormEvent) => { e.preventDefault(); onSend(); },
@@ -165,7 +176,7 @@ export function ChatView({ messages, input, loading, onInputChange, onSend, onQu
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
           <div className="group flex items-end gap-2 bg-surface border border-border rounded-2xl px-4 py-2.5 shadow-sm focus-within:border-primary/40 focus-within:shadow-md transition-all duration-200">
             <textarea
-              rows={1}
+              rows={textareaRows}
               value={input}
               onChange={(e) => onInputChange(e.target.value)}
               onKeyDown={(e) => {
