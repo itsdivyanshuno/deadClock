@@ -1,10 +1,10 @@
 <div align="center">
 
-# ⏱ deadClock
+# ⏱️ deadClock
 
-### 🚨 The Last-Minute Life Saver
+### **The Last-Minute Life Saver**
 
-#### **AI-powered productivity companion that transforms chaos into an actionable plan in seconds.**
+#### 🚀 AI-powered productivity companion that transforms chaos into an actionable plan in seconds.
 
 <p align="center">
   <strong>Stop managing tasks. Start completing them.</strong>
@@ -16,177 +16,122 @@
 
 <br/>
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge\&logo=next.js)
-![React](https://img.shields.io/badge/React-19-20232A?style=for-the-badge\&logo=react)
-![Tailwind](https://img.shields.io/badge/Tailwind-v4-38B2AC?style=for-the-badge\&logo=tailwind-css)
-![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4?style=for-the-badge\&logo=google)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge\&logo=sqlite)
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js"/>
+  <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black"/>
+  <img src="https://img.shields.io/badge/Tailwind-v4-38BDF8?style=for-the-badge&logo=tailwindcss"/>
+  <img src="https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google"/>
+  <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite"/>
+</p>
 
-<br/>
-
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Coming_Soon-black?style=for-the-badge)](#)
-[![Demo Video](https://img.shields.io/badge/🎥_Demo_Video-Coming_Soon-red?style=for-the-badge)](#)
-[![License](https://img.shields.io/github/license/itsdivyanshuno/vibe2ship-lastminute-lifesaver?style=for-the-badge)](#)
+<p align="center">
+  <a href="#"><img src="https://img.shields.io/badge/🚀_Live_Demo-Visit-black?style=for-the-badge"/></a>
+  <a href="#"><img src="https://img.shields.io/badge/🎥_Demo_Video-Watch-red?style=for-the-badge"/></a>
+  <a href="#"><img src="https://img.shields.io/github/stars/itsdivyanshuno/vibe2ship-lastminute-lifesaver?style=for-the-badge"/></a>
+</p>
 
 </div>
 
 ---
 
-# 🌟 Why deadClock?
+## 🎬 Demo
 
-Modern productivity apps often create **more work instead of less**.
+> Replace with your GIF or screen recording.
 
-You fill forms.
-
-You drag cards.
-
-You manage tags.
-
-You organize lists.
-
-Then you procrastinate.
-
-**deadClock eliminates all of that.**
-
-Simply describe your situation naturally:
-
-> *"I have an exam on Friday, a presentation tomorrow, and three assignments pending. Help me plan."*
-
-deadClock instantly:
-
-✅ Creates tasks automatically
-
-✅ Prioritizes based on urgency
-
-✅ Breaks large goals into milestones
-
-✅ Detects risky deadlines
-
-✅ Suggests what to focus on next
+![Demo](https://via.placeholder.com/1200x600/0F172A/FFFFFF?text=📹+Add+Your+Demo+GIF+Here)
 
 ---
 
-# 🎬 Demo
+## 🌟 Why deadClock?
 
-> Replace these placeholders before submission.
+Traditional productivity apps require users to:
 
-### Demo GIF
+❌ Fill forms
+❌ Organize boards
+❌ Drag cards
+❌ Manually prioritize tasks
 
-![Demo Placeholder](https://via.placeholder.com/1000x500/0F172A/FFFFFF?text=📹+Add+Your+Demo+GIF+Here)
+**deadClock eliminates all of this.**
 
----
+> 💬 *"I have a project presentation due Friday, three reports to send, and an exam this week. Help me plan."*
 
-# ✨ Key Features
+⚡ **deadClock instantly:**
 
-## 🤖 AI-Native Productivity
-
-Forget forms and manual task management.
-
-Use natural conversation while Gemini handles all planning automatically.
-
----
-
-## 🎯 Goal Decomposition Engine
-
-Large goals are intelligently broken down into realistic milestones based on available time and workload.
+* Creates actionable tasks
+* Prioritizes by urgency & impact
+* Breaks goals into milestones
+* Detects risky deadlines
+* Suggests what to focus on today
 
 ---
 
-## ⚠️ Deadline Risk Detection
+## ✨ Features
 
-The system continuously identifies tasks at risk and proactively recommends schedule adjustments.
-
----
-
-## 🧠 Proactive Intelligence
-
-deadClock doesn't wait for instructions.
-
-It analyzes workload patterns and recommends high-impact actions automatically.
-
----
-
-## 🔒 Privacy First
-
-No accounts.
-
-No cookies.
-
-No cloud sync.
-
-Everything remains securely stored locally using SQLite.
+| Feature                           | Description                                                       |
+| --------------------------------- | ----------------------------------------------------------------- |
+| 🤖 **AI-native task management**  | Natural language task creation powered by Gemini function calling |
+| 🎯 **Goal tracking & milestones** | Converts long-term goals into realistic weekly plans              |
+| ⚠️ **At-risk deadline detection** | Flags risky tasks and recommends rescheduling                     |
+| 🧠 **Proactive suggestions**      | AI surfaces important actions before you ask                      |
+| 💬 **Conversation-first UX**      | No forms, no drag-and-drop, just chat                             |
+| 🔒 **Local-first storage**        | SQLite persistence with zero cloud dependency                     |
 
 ---
 
-# 🏗 System Architecture
+## 🏗️ Architecture
 
 ```text
-┌────────────────────────────────────────────┐
-│                 User Input                │
-└──────────────────┬────────────────────────┘
-                   │
-                   ▼
-┌────────────────────────────────────────────┐
-│             Next.js API Route             │
-└──────────────────┬────────────────────────┘
-                   │
-                   ▼
-┌────────────────────────────────────────────┐
-│          Gemini Agent Orchestrator        │
-│                                            │
-│ • Context Management                       │
-│ • Function Calling                         │
-│ • Tool Execution                           │
-│ • Response Generation                      │
-└──────────────────┬────────────────────────┘
-                   │
-                   ▼
-┌────────────────────────────────────────────┐
-│               Tool Layer                  │
-│                                            │
-│ add_task()                                │
-│ prioritise_tasks()                        │
-│ break_down_goal()                         │
-│ suggest_schedule()                        │
-│ ...                                       │
-└──────────────────┬────────────────────────┘
-                   │
-                   ▼
-┌────────────────────────────────────────────┐
-│             SQLite Persistence            │
-└────────────────────────────────────────────┘
+User Message
+      │
+      ▼
+Next.js API Route
+      │
+      ▼
+Gemini Agent
+      │
+ ┌────┼─────────────────────┐
+ ▼    ▼      ▼      ▼      ▼
+Tools Function Calling Logic
+      │
+      ▼
+SQLite Persistence
+      │
+      ▼
+Updated UI State
 ```
 
-# 🛠 Tech Stack
+---
 
-| Category    | Technologies            |
-| ----------- | ----------------------- |
-| Frontend    | Next.js 16, React 19    |
-| Styling     | Tailwind CSS v4         |
-| AI          | Google Gemini 2.5 Flash |
-| Persistence | SQLite + better-sqlite3 |
-| Runtime     | Node.js                 |
-| Deployment  | Vercel                  |
+## 🧰 Gemini Tool Ecosystem
+
+| Tool                        | Purpose                               |
+| --------------------------- | ------------------------------------- |
+| `add_task`                  | Create tasks with metadata & subtasks |
+| `prioritise_tasks`          | Rank tasks automatically              |
+| `complete_task`             | Mark tasks complete                   |
+| `add_goal`                  | Create long-term goals                |
+| `break_down_goal`           | Generate milestones                   |
+| `suggest_schedule`          | Create daily schedules                |
+| `get_reminders`             | Surface urgent tasks                  |
+| `suggest_proactive_actions` | Recommend next actions                |
+| `reschedule_at_risk_tasks`  | Protect deadlines                     |
 
 ---
 
-# 🧰 Gemini Tool Ecosystem
+## 🛠️ Tech Stack
 
-| Tool                        | Purpose                  |
-| --------------------------- | ------------------------ |
-| `add_task`                  | Create intelligent tasks |
-| `prioritise_tasks`          | Rank tasks automatically |
-| `complete_task`             | Mark tasks complete      |
-| `add_goal`                  | Create long-term goals   |
-| `break_down_goal`           | Generate milestones      |
-| `suggest_schedule`          | Create daily schedules   |
-| `get_reminders`             | Surface urgent items     |
-| `suggest_proactive_actions` | Recommend next actions   |
-| `reschedule_at_risk_tasks`  | Protect deadlines        |
+| Layer           | Technologies            |
+| --------------- | ----------------------- |
+| **Frontend**    | Next.js 16, React 19    |
+| **Styling**     | Tailwind CSS v4         |
+| **AI Engine**   | Google Gemini 2.5 Flash |
+| **Persistence** | SQLite + better-sqlite3 |
+| **Runtime**     | Node.js                 |
+| **Deployment**  | Vercel                  |
 
 ---
 
-# 📁 Project Structure
+## 📁 Project Structure
 
 ```bash
 app/
@@ -207,36 +152,22 @@ notes/
 
 ---
 
-# 🚀 Quick Start
-
-## Clone Repository
+## 🚀 Quick Start
 
 ```bash
+# Clone repository
 git clone https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver.git
+
+# Move into project
 cd vibe2ship-lastminute-lifesaver
-```
 
-## Install Dependencies
-
-```bash
+# Install dependencies
 npm install
-```
 
-## Configure Environment
-
-```bash
+# Configure environment
 cp .env.local.example .env.local
-```
 
-Add:
-
-```env
-GEMINI_API_KEY=your_api_key_here
-```
-
-## Run Locally
-
-```bash
+# Start development server
 npm run dev
 ```
 
@@ -248,45 +179,49 @@ http://localhost:3000
 
 ---
 
-# 🏆 Hackathon Highlights
+<details>
+<summary><b>🧠 Technical Design Details</b></summary>
 
-| Category        | Achievement               |
-| --------------- | ------------------------- |
-| Agentic AI      | 9 Function Calling Tools  |
-| User Experience | Zero Onboarding           |
-| Privacy         | Local-First Architecture  |
-| Intelligence    | Proactive Suggestions     |
-| Reliability     | Transactional Persistence |
+* All AI orchestration lives server-side in `lib/agent.ts`
+* Gemini performs reasoning and tool selection
+* Client never directly mutates storage
+* SQLite transactions guarantee consistency
+* Local-first architecture ensures privacy
+
+</details>
+
+<details>
+<summary><b>🏆 What Makes deadClock Different?</b></summary>
+
+| Area         | Highlights                   |
+| ------------ | ---------------------------- |
+| Agentic AI   | 9 Gemini tools               |
+| UX           | Zero onboarding friction     |
+| Privacy      | Fully local-first            |
+| Performance  | Turbopack + optimized writes |
+| Intelligence | Proactive suggestions        |
+
+</details>
 
 ---
 
-# 📹 Submission Resources
+## 📹 Submission Resources
 
-| Resource         | Link |
-| ---------------- | ---- |
-| Demo Video       | TODO |
-| Pitch Deck       | TODO |
-| Submission Doc   | TODO |
-| Live Application | TODO |
-
----
-
-# 💡 What Makes deadClock Different?
-
-* Conversational-first productivity.
-* Autonomous prioritization.
-* Proactive deadline management.
-* Goal decomposition engine.
-* Fully local-first architecture.
-* No signup friction.
-* Immediate value within seconds.
+| Resource          | Link |
+| ----------------- | ---- |
+| 🎬 Demo Video     | TODO |
+| 📄 Submission Doc | TODO |
+| 📊 Pitch Deck     | TODO |
+| 🚀 Live App       | TODO |
 
 ---
 
 <div align="center">
 
-### Built with ❤️ for Vibe2Ship 2026
+### ⭐ Built for Vibe2Ship 2026
 
-**If this project helped you, consider giving it a ⭐**
+**Conversation-first productivity for the last-minute generation.**
+
+[⬆ Back to Top](#-deadclock)
 
 </div>
