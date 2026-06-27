@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deadline — Vibe2Ship Hackathon Submission</title>
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+      color: #1e293b;
+      background: #f8fafc;
+    }
+
+    /* ── Page wrapper ── */
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      text-align: center;
+      padding: 56px 24px 48px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 40%, #06b6d4 100%);
+      color: white;
+      margin-bottom: 48px;
+    }
+
+    .cover .icon   { font-size: 56px; margin-bottom: 12px; }
+    .cover h1      { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; }
+    .cover .sub    { font-size: 15px; opacity: .85; margin-top: 6px; }
+    .cover .badge  {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 5px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .4px;
+    }
+
+    /* ── Section headings ── */
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 40px 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    h2:first-of-type { margin-top: 0; }
+
+    h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #6366f1;
+      margin: 24px 0 8px;
+    }
+
+    p { margin-bottom: 12px; color: #334155; }
+
+    /* ── Problem statement box ── */
+    .callout {
+      background: #eef2ff;
+      border-left: 4px solid #6366f1;
+      border-radius: 0 12px 12px 0;
+      padding: 18px 22px;
+      margin: 16px 0 24px;
+    }
+    .callout p { margin: 0; color: #3730a3; font-weight: 500; }
+
+    /* ── Feature grid ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .feature-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 20px;
+      transition: box-shadow .15s;
+    }
+    .feature-card:hover { box-shadow: 0 4px 18px rgba(99,102,241,.12); }
+    .feature-card .emoji { font-size: 24px; margin-bottom: 6px; }
+    .feature-card h4   { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .feature-card p    { font-size: 12.5px; color: #64748b; margin: 0; }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0 22px;
+      font-size: 13.5px;
+    }
+    thead tr { background: #f1f5f9; }
+    th {
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-weight: 600; color: #0f172a; white-space: nowrap; }
+
+    /* ── Code block ── */
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12.5px;
+      background: #f1f5f9;
+      padding: 1px 6px;
+      border-radius: 4px;
+      color: #6366f1;
+    }
+
+    /* ── Flow diagram ── */
+    .flow {
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin: 20px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #e2e8f0;
+      white-space: pre;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+    .flow .kw  { color: #c084fc; } /* purple */
+    .flow .fn  { color: #67e8f9; } /* cyan */
+    .flow .cm  { color: #64748b; font-style: italic; } /* comment */
+
+    /* ── Tool list ── */
+    .tool-list { list-style: none; margin: 12px 0 20px; }
+    .tool-list li {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13.5px;
+    }
+    .tool-list li:last-child { border-bottom: none; }
+    .tool-list code { font-size: 12px; }
+
+    /* ── Step list ── */
+    .step-list { list-style: none; counter-reset: step; margin: 14px 0; }
+    .step-list li {
+      counter-increment: step;
+      display: flex;
+      gap: 12px;
+      margin-bottom: 10px;
+      font-size: 13.5px;
+    }
+    .step-list li::before {
+      content: counter(step);
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: #6366f1;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 56px;
+      padding-top: 20px;
+      border-top: 1px solid #e2e8f0;
+      text-align: center;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .footer a { color: #6366f1; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Link button ── */
+    .link-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 8px;
+    }
+    .link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity .15s;
+    }
+    .link-btn:hover { opacity: .85; }
+    .link-btn.primary { background: #6366f1; color: white; }
+    .link-btn.secondary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══════════════════════════ COVER ══════════════════════════ -->
+  <div class="cover">
+    <div class="icon">⚡</div>
+    <h1>Deadline</h1>
+    <p class="sub">The Last-Minute Life Saver</p>
+    <span class="badge">Vibe2Ship Hackathon — June 2026</span>
+  </div>
+
+  <!-- ══════════════════════════ LINKS ═════════════════════════ -->
+  <div class="link-row">
+    <a class="link-btn primary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#128279; GitHub Repository</a>
+    <a class="link-btn secondary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#128640; Live Demo</a>
+  </div>
+
+  <!-- ══════════════════════════ PROBLEM STATEMENT ══════════════ -->
+  <h2>📌 Problem Statement Selected</h2>
+
+  <div class="callout">
+    <p><strong>The Last-Minute Life Saver</strong> — Build an AI-powered productivity companion that proactively helps users plan, prioritize, and complete tasks before deadlines. The solution should act as an autonomous agent that understands context, breaks down complex goals, and helps users make better decisions under time pressure.</p>
+  </div>
+
+  <!-- ══════════════════════════ SOLUTION OVERVIEW ══════════════ -->
+  <h2>💡 Solution Overview</h2>
+
+  <p><strong>Deadline</strong> is an AI productivity companion built with Next.js and Google Gemini that transforms how users interact with their task lists. Instead of manually creating and sorting tasks, users have a conversation with an AI assistant that <em>actively plans, prioritizes, and monitors</em> their workload.</p>
+
+  <p>The user describes their tasks, deadlines, and goals in plain language. The Gemini-powered agent parses this input, creates structured task records, ranks them by urgency, breaks large goals into actionable weekly plans, and proactively alerts users when deadlines are at risk.</p>
+
+  <p>All data is persisted locally using SQLite, ensuring fast, private, and offline-capable operation — no accounts, no cloud sync, no third-party storage required.</p>
+
+  <h3>How it works</h3>
+  <ol class="step-list">
+    <li>User opens the chat and describes what they need to accomplish</li>
+    <li>The AI creates tasks with priorities, deadlines, and subtasks automatically</li>
+    <li>Users can view, filter, and toggle tasks in a dedicated Tasks view</li>
+    <li>Goals with milestones are tracked visually with progress indicators</li>
+    <li>The AI proactively surfaces overdue items, at-risk tasks, and focus recommendations</li>
+  </ol>
+
+  <!-- ══════════════════════════ KEY FEATURES ══════════════════ -->
+  <h2>✨ Key Features</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="emoji">🤖</div>
+      <h4>AI-Native Task Management</h4>
+      <p>Create, prioritize, and complete tasks through natural conversation. No forms to fill — just describe what you need.</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">🧠</div>
+      <h4>Proactive Workload Analysis</h4>
+      <p>The assistant actively monitors your list and surfaces suggestions — overdue items, upcoming deadlines, and overloaded areas.</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">🎯</div>
+      <h4>Autonomous Goal Breakdown</h4>
+      <p>Set a goal with a deadline and available hours per week — the AI generates a proportional weekly task plan automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">⚠️</div>
+      <h4>At-Risk Deadline Detection</h4>
+      <p>Tasks nearing their deadline are flagged and rescheduling suggestions are generated before they slip through the cracks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">📅</div>
+      <h4>Time-Block Scheduling</h4>
+      <p>Get a suggested daily schedule with time blocks allocated by priority and estimated effort.</p>
+    </div>
+    <div class="feature-card">
+      <div class="emoji">💬</div>
+      <h4>Three-Pane Interface</h4>
+      <p>Chat surface, filterable task list, and goal tracker with progress bars — all in sync automatically.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════ TECHNOLOGIES ══════════════════ -->
+  <h2>🛠️ Technologies Used</h2>
+
+  <table>
+    <thead>
+      <tr><th>Technology</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Next.js 16 (App Router)</td><td>Full-stack React framework with API routes</td></tr>
+      <tr><td>React 19</td><td>Client-side UI rendering and state management</td></tr>
+      <tr><td>Tailwind CSS v4</td><td>Design system and component styling</td></tr>
+      <tr><td>Google Gemini API</td><td>AI reasoning, natural language understanding, and function calling</td></tr>
+      <tr><td>better-sqlite3</td><td>Local SQLite database for task, goal, and chat persistence</td></tr>
+      <tr><td>TypeScript 5</td><td>Type safety across the entire codebase</td></tr>
+      <tr><td>Node.js Runtime</td><td>Server-side execution for SQLite and chat API routes</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════ GOOGLE TECHNOLOGIES ═══════════ -->
+  <h2>🌐 Google Technologies Utilized</h2>
+
+  <table>
+    <thead>
+      <tr><th>Technology</th><th>How it's used</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Google AI Studio</td>
+        <td>Source of the Gemini API key — used to generate and manage the API credential for the application</td>
+      </tr>
+      <tr>
+        <td>Gemini API <code>@google/genai</code></td>
+        <td>The core AI engine powering all agent reasoning, natural language understanding, and response generation</td>
+      </tr>
+      <tr>
+        <td>Gemini Function Calling</td>
+        <td>The architectural backbone of agentic behavior — 9 tools are declared as function definitions. Gemini decides when and how to call them; results drive real state changes in the user's task store</td>
+      </tr>
+      <tr>
+        <td>Gemini Model <code>gemini-2.5-flash</code></td>
+        <td>The specific LLM powering all inference — selected for speed, multimodal capability, and native function-calling support</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Function Calling tools</h3>
+  <p>Nine tools are declared to Gemini via <code>functionDeclarations</code>. Gemini operates in <code>AUTO</code> mode — it decides which tools to invoke based on the user's message:</p>
+
+  <ul class="tool-list">
+    <li><code>add_task</code> — create tasks with deadline, priority, category, and subtasks</li>
+    <li><code>prioritize_tasks</code> — re-sort pending tasks by urgency and impact</li>
+    <li><code>complete_task</code> — mark a task as completed by ID</li>
+    <li><code>add_goal</code> — create long-term goals with milestone checklists</li>
+    <li><code>suggest_schedule</code> — generate a time-blocked daily plan for pending tasks</li>
+    <li><code>get_reminders</code> — surface urgent or overdue tasks within a selected timeframe</li>
+    <li><code>suggest_proactive_actions</code> — analyse workload and surface proactive suggestions</li>
+    <li><code>break_down_goal</code> — split a high-level goal into proportional weekly tasks</li>
+    <li><code>reschedule_at_risk_tasks</code> — propose realistic new deadlines for at-risk tasks</li>
+  </ul>
+
+  <!-- ══════════════════════════ ARCHITECTURE ══════════════════ -->
+  <h2>🏗️ Architecture</h2>
+
+  <p>All AI logic lives server-side. The client is a thin orchestrator that delegates to a single endpoint.</p>
+
+  <div class="flow"><span class="cm">// Data flow — every mutation goes through the AI agent</span>
+<span class="kw">User types message</span>
+       │
+       ▼
+<span class="fn">POST /api/chat { message }</span>
+  │  • loadState()  ← SQLite
+  │  • system prompt + history → Gemini
+  │  • Gemini calls tools (add_task, …)
+  │  • Tools mutate in-memory state
+  │  • Gemini → follow-up text response
+  │  • saveState()  → SQLite (1 transaction)
+       │
+       ▼
+ { response, tasks[], goals[] }  ──►  Client updates UI</div>
+
+  <h3>Key design decisions</h3>
+  <ul class="step-list" style="list-style:none; counter-reset:none;">
+    <li style="list-style:none; counter-increment:none; display:block;">
+      <strong>Server-side only mutations</strong> — the client never writes to the store directly; every change flows through <code>/api/chat</code>.
+    </li>
+    <li style="list-style:none; counter-increment:none; display:block; margin-top:8px;">
+      <strong>Append-and-replace persistence</strong> — <code>saveState()</code> clears all rows then re-inserts them in a single transaction, keeping the database a perfect snapshot of the agent's last turn.
+    </li>
+    <li style="list-style:none; counter-increment:none; display:block; margin-top:8px;">
+      <strong>Local-first</strong> — no accounts, no cloud sync, no cookies. SQLite is the only backing store.
+    </li>
+  </ul>
+
+  <!-- ══════════════════════════ SUBMISSION ════════════════════ -->
+  <h2>🔗 Submission Links</h2>
+
+  <div class="link-row" style="margin-top:0;">
+    <a class="link-btn primary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#128187; GitHub Repository</a>
+    <a class="link-btn secondary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#127918; Deployed App</a>
+  </div>
+
+  <!-- ══════════════════════════ FOOTER ════════════════════════ -->
+  <div class="footer">
+    Submitted for <a href="https://vibe2ship.com" target="_blank">Vibe2Ship</a> Hackathon — June 2026<br/>
+    Built with Next.js + Google Gemini by Divyansh
+  </div>
+
+</div>
+</body>
+</html>

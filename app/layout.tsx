@@ -21,8 +21,8 @@ import "./globals.css";
  * Individual pages can override these via their own `metadata` export.
  */
 export const metadata: Metadata = {
-  title: "Deadline — AI Productivity Companion",
-  description: "AI-powered task management for students and professionals",
+  title: "deadClock — Your Last-Minute Life Saver",
+  description: "An AI productivity companion that plans, prioritises, and helps you beat every deadline.",
 };
 
 export default function RootLayout({
