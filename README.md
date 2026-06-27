@@ -8,13 +8,11 @@
 
 Turns *"I have too much to do"* into a structured plan in one message — no forms, no manual sorting, no cognitive overhead.
 
-Built with ❤️ using [Next.js](https://nextjs.org/) + [Google Gemini](https://ai.google.dev/)
+🛠 **Built with**
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.2.9-black?logo=nextdotjs&logoColor=white)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-19.2.4-61dafb?logo=react&logoColor=white)](https://react.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-v4-38bdf8?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Gemini](https://img.shields.io/badge/Gemini-2.5_flash-4285f4?logo=google&logoColor=white)](https://ai.google.dev/)
-[![SQLite](https://img.shields.io/badge/SQLite-better--sqlite3-f7df1e?logo=sqlite&logoColor=black)](https://github.com/WiseLibs/better-sqlite3)
+| | | | | |
+|---|---|---|---|---|
+| ⚡ **[Next.js 16](https://nextjs.org/)** | ⚛️ **[React 19](https://react.dev/)** | 🎨 **[Tailwind CSS v4](https://tailwindcss.com/)** | 🤖 **[Google Gemini](https://ai.google.dev/)** | 🗄️ **[SQLite](https://github.com/WiseLibs/better-sqlite3)** |
 
 <!--
 🎬 DEMO GIF — replace the line below with your screen recording.
