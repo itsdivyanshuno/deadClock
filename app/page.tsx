@@ -28,6 +28,7 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<"chat" | "tasks" | "goals">("chat");
+  const [greeting, setGreeting] = useState(getGreeting());
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -157,7 +158,7 @@ export default function Home() {
             {/* Header */}
             <header className="p-5 border-b border-surface-lighter flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-white">{getGreeting()}, Divyansh</h2>
+                <h2 className="text-lg font-semibold text-white">{greeting}, Divyansh</h2>
                 <p className="text-sm text-gray-400">I'll help you crush your deadlines. What's on your plate?</p>
               </div>
               <div className="flex items-center gap-2 text-xs text-gray-400">
