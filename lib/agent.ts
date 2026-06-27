@@ -37,6 +37,17 @@ function cloneState(state: any): any {
   return JSON.parse(JSON.stringify(state));
 }
 
+// Helper to safely parse time estimates
+function parseTimeEstimate(timeStr: string): number {
+  const parsed = parseInt(timeStr);
+  return isNaN(parsed) || parsed <= 0 ? 1 : parsed;
+}
+
+// Helper to generate unique IDs
+function generateId(prefix: string): string {
+  return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+}
+
 // Helper to format date (same as before)
 function formatDate(iso: string) {
   try {
@@ -197,7 +208,7 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
   switch (name) {
     case "add_task": {
       const task: Task = {
-        id: `task_${Date.now()}`,
+        id: generateId("task"),
         title: args.title,
         description: args.description || "",
         priority: (args.priority || "medium") as Task["priority"],
@@ -239,7 +250,7 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
     }
     case "add_goal": {
       const goal: Goal = {
-        id: `goal_${Date.now()}`,
+        id: generateId("goal"),
         title: args.title,
         description: args.description || "",
         deadline: args.deadline,
@@ -258,7 +269,7 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
       if (pending.length === 0) return { success: true, message: "📅 No pending tasks to schedule. Enjoy your free time!" };
       const schedule = pending.slice(0, 5).map((t, i) => {
         const hour = 9 + i * 2;
-        const endHour = hour + parseInt(t.estimatedTime) || 1;
+        const endHour = hour + parseTimeEstimate(t.estimatedTime);
         return `• ${hour}:00 - ${endHour}:00 → ${t.title} (${t.estimatedTime}, ${t.priority} priority)`;
       });
       return {
@@ -273,8 +284,8 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
         const deadline = new Date(t.deadline);
         const diffHours = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60);
         if (args.timeframe === "today") return diffHours <= 24;
-        if (args.timeframe === "tomorrow") return diffHours <= 48 && diffHours > 0;
-        if (args.timeframe === "this_week") return diffHours <= 168 && diffHours > 0;
+        if (args.timeframe === "tomorrow") return diffHours > 24 && diffHours <= 48;
+        if (args.timeframe === "this_week") return diffHours > 48 && diffHours <= 168;
         return t.priority === "urgent" || t.priority === "high";
       });
       if (urgent.length === 0) return { success: true, message: "✅ No urgent reminders right now. You're on top of things!" };
@@ -349,7 +360,7 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
       }
 
       // 5. Suggest breaking down large tasks
-      const bigTasks = state.tasks.filter(t => t.subtasks.length === 0 && t.estimatedTime && parseInt(t.estimatedTime) > 2); // >2 hours
+      const bigTasks = state.tasks.filter(t => t.subtasks.length === 0 && t.estimatedTime && parseTimeEstimate(t.estimatedTime) > 2); // >2 hours
       if (bigTasks.length > 0) {
         suggestions.push(`🔧 Consider breaking down these larger tasks into subtasks: ${bigTasks.map(t => t.title).join(", ")}`);
       }
@@ -360,25 +371,52 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
 
     case "break_down_goal": {
       const { goalTitle, deadline, availableHoursPerWeek } = args;
+      // Input validation
+      if (availableHoursPerWeek <= 0) {
+        return { success: false, message: "Available hours per week must be positive." };
+      }
+
       const goal = state.goals.find(g => g.title === goalTitle);
       if (!goal) return { success: false, message: `Goal "${goalTitle}" not found.` };
+
       const dueDate = new Date(deadline);
       const today = new Date();
+
+      // Check if deadline is in the past
+      if (dueDate <= today) {
+        return { success: false, message: "Goal deadline must be in the future." };
+      }
+
       const weeksDiff = Math.max(0, Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24 * 7)));
       const totalHours = weeksDiff * availableHoursPerWeek;
       if (totalHours <= 0) return { success: false, message: "Not enough time left to break down this goal." };
 
       // Simple breakdown: allocate hours to milestones evenly
       const milestones = goal.milestones.map(m => ({ title: m.title, done: m.done }));
+
+      // Handle edge case where goal has no milestones
+      if (milestones.length === 0) {
+        return {
+          success: false,
+          message: "Goal has no milestones to break down. Please add milestones first."
+        };
+      }
+
       const hoursPerMilestone = totalHours / milestones.length;
       const tasks: Task[] = [];
+
+      // Distribute deadlines evenly across the timeline
       milestones.forEach((m, index) => {
+        // Calculate proportional time for this milestone
+        const progress = (index + 1) / milestones.length;
+        const milestoneDeadline = new Date(today.getTime() + (dueDate.getTime() - today.getTime()) * progress);
+
         const task: Task = {
-          id: `task_${Date.now()}_${index}`,
+          id: generateId("task"),
           title: `Work on milestone: ${m.title}`,
           description: `Part of goal "${goalTitle}". Estimated time: ${hoursPerMilestone.toFixed(1)} hours.`,
           priority: "medium",
-          deadline: new Date(today.getTime() + (index + 1) * (weeksDiff * 7 * 24 * 60 * 60 * 1000) / milestones.length).toISOString(),
+          deadline: milestoneDeadline.toISOString(),
           status: "pending",
           category: goal.title,
           estimatedTime: `${hoursPerMilestone.toFixed(1)} hours`,
@@ -387,6 +425,7 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
         };
         tasks.push(task);
       });
+
       state.tasks.push(...tasks);
       return {
         success: true,
