@@ -1,6 +1,6 @@
 /**
  * @module agent
- * @description Core AI agent logic for the Deadline productivity assistant.
+ * @description Core AI agent logic for the deadClock productivity assistant.
  *
  * This module:
  * 1. Defines the TypeScript interfaces for all domain objects (Task, Goal, Message).
@@ -124,7 +124,7 @@ interface TaskStore {
  * about *how* to act comes from the tool descriptions and parameter schemas,
  * which Gemini reads directly from the function declarations below.
  */
-const SYSTEM_PROMPT = `You are "Deadline", an AI productivity companion. Your job is to help users plan, prioritize, and complete tasks before deadlines.
+const SYSTEM_PROMPT = `You are "deadClock", an AI productivity companion. Your job is to help users plan, prioritize, and complete tasks before deadlines.
 
 When a user mentions tasks, deadlines, or goals:
 1. Break large tasks into smaller subtasks

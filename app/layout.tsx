@@ -1,6 +1,6 @@
 /**
  * @module app/layout
- * @description Root layout for the Deadline application.
+ * @description Root layout for the deadClock application.
  *
  * Responsibilities:
  *  - Provide global `<html>` and `<body>` wrappers consumed by every page.

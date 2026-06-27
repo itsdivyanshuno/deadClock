@@ -1,6 +1,6 @@
 /**
  * @module routes/chat
- * @description Next.js API Route — chat endpoint for the Deadline assistant.
+ * @description Next.js API Route — chat endpoint for the deadClock assistant.
  *
  * Endpoints:
  *  POST /api/chat   Accepts a user message, forwards it to the Gemini AI agent,
