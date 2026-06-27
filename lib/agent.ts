@@ -502,7 +502,7 @@ export async function chat(userMessage: string) {
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    config: { tools: taskTools, toolConfig: { functionCallingConfig: { mode: "AUTO" } } },
+    config: { tools: taskTools as any, toolConfig: { functionCallingConfig: { mode: "AUTO" as any } } },
     contents: messages,
   });
 
@@ -514,10 +514,11 @@ export async function chat(userMessage: string) {
     const functionResponses: any[] = [];
 
     for (const call of toolCalls) {
-      const result = handleToolCall(call.functionCall.name, call.functionCall.args, state);
+      const _fc = (call as any).functionCall!;
+      const result = handleToolCall(_fc.name, _fc.args, state);
       functionResponses.push({
         functionResponse: {
-          name: call.functionCall.name,
+          name: _fc.name,
           response: result,
         },
       });
