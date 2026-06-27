@@ -44,3 +44,8 @@ next-env.d.ts
 data.db
 # Dev log
 dev.log
+*.backup
+*.db
+dev.log
+*.docx
+*.pdf:Zone.Identifier
