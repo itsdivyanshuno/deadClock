@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, MessageSquare, CheckSquare, Target, LayoutDashboard, Settings, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Search, MessageSquare, CheckSquare, Target, LayoutDashboard, Settings } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 
 type View = "chat" | "tasks" | "goals" | "dashboard" | "settings";
