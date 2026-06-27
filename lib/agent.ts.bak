@@ -3,14 +3,14 @@
  * @description Core AI agent logic for the Deadline productivity assistant.
  *
  * This module:
- * 1. Defines the TypeScript interfaces for all domain objects (Task, Goal, Message).
- * 2. Declares the Gemini function/tool definitions that give the AI the ability
- *    to read and mutate the user's task/goal/chat store.
- * 3. Implements a `handleToolCall` dispatcher that executes each tool against
- *    an in-memory state clone.
- * 4. Orchestrates the two-turn Gemini conversation: prompt → tool call → result
- *    → follow-up text response.
- * 5. Persists all state changes to SQLite after every turn via `saveState`.
+ *  1. Defines the TypeScript interfaces for all domain objects (Task, Goal, Message).
+ *  2. Declares the Gemini function/tool definitions that give the AI the ability
+ *     to read and mutate the user's task store.
+ *  3. Implements a `handleToolCall` dispatcher that executes each tool against
+ *     an in-memory state clone.
+ *  4. Orchestrates the two-turn Gemini conversation: prompt → tool call → result
+ *     → follow-up text response.
+ *  5. Persists all state changes to SQLite after every turn via `saveState`.
  *
  * @see {@link https://ai.google.dev/gemini-api/docs/function-calling} Gemini function calling docs
  */
@@ -18,8 +18,9 @@
 import { GoogleGenAI } from "@google/genai";
 import { loadState, saveState } from "./db";
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Configuration
+//  Configuration
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Gemini API key loaded from the server environment (injected by Next.js). */
@@ -35,8 +36,9 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
  */
 const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Type definitions
+//  Type definitions
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -58,10 +60,10 @@ export interface Task {
   deadline: string;
   /**
    * Current lifecycle state.
-   * - `pending` → not yet started.
+   * - `pending`    → not yet started.
    * - `in_progress`→ actively being worked on.
-   * - `completed` → done.
-   * - `overdue` → deadline has passed without completion.
+   * - `completed`  → done.
+   * - `overdue`    → deadline has passed without completion.
    */
   status: "pending" | "in_progress" | "completed" | "overdue";
   /** Freeform classification (e.g. "Work", "Study", "Health"). */
@@ -112,8 +114,9 @@ interface TaskStore {
   chatHistory: Message[];
 }
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// System prompt
+//  System prompt
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -140,8 +143,9 @@ Available user profile hints (infer from their messages):
 - Professional: meetings, reports, project deadlines
 - Entrepreneur: business milestones, client commitments`;
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Gemini tool (function) declarations
+//  Gemini tool (function) declarations
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Ordered priority mapping used by both the prioritise tool and the task card sort. */
@@ -151,9 +155,9 @@ const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, 
  * Tool definitions exposed to Gemini via the function calling API.
  *
  * Each entry declares:
- * - `name` → matched in `handleToolCall`'s switch statement.
- * - `description`→ what Gemini tells the user this tool does.
- * - `parameters` → JSON Schema; Gemini uses this to extract structured args.
+ *  - `name`       → matched in `handleToolCall`'s switch statement.
+ *  - `description`→ what Gemini tells the user this tool does.
+ *  - `parameters` → JSON Schema; Gemini uses this to extract structured args.
  *
  * Only `name` and `description` are visible to the user; `parameters` guide
  * the model's internal argument extraction.
@@ -179,7 +183,7 @@ const taskTools = [
           required: ["title", "deadline"],
         },
       },
-      // ── prioritize_tasks ──────────────────────────────────────────────────
+      // ── prioritise_tasks ──────────────────────────────────────────────────
       {
         name: "prioritize_tasks",
         description: "Re-sort all pending tasks by urgency and importance; returns an ordered summary.",
@@ -277,21 +281,6 @@ const taskTools = [
           required: ["goalTitle", "deadline", "availableHoursPerWeek"],
         },
       },
-// ── delete_task ────────────────────────────────────────────────────
-{
-  name: "delete_task",
-  description: "Permanently delete a task from the project by id.",
-  parameters: {
-    type: "object",
-    properties: {
-      id: {
-        type: "string",
-        description: "The exact id of the task to delete."
-      }
-    },
-    required: ["id"],
-  },
-},
       // ── reschedule_at_risk_tasks ──────────────────────────────────────────
       {
         name: "reschedule_at_risk_tasks",
@@ -311,8 +300,9 @@ const taskTools = [
   },
 ];
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Tool-call dispatcher
+//  Tool-call dispatcher
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -322,14 +312,14 @@ const taskTools = [
  * is responsible for persisting the final state via `saveState` after all tool
  * calls in a turn have resolved.
  *
- * @param {string} name - The tool name (must match a case in this switch).
- * @param {any} args - Structured arguments extracted by Gemini from the user's message.
+ * @param {string}   name  - The tool name (must match a case in this switch).
+ * @param {any}      args  - Structured arguments extracted by Gemini from the user's message.
  * @param {TaskStore} state - Mutable in-memory state this turn (treated as a working copy).
  *
  * @returns {{ success: boolean; message: string; [key: string]: any }}
- * A structured result object. The `message` property is shown to the user.
- * Additional properties (e.g. `task`, `goal`, `tasks`, `atRiskTasks`) are
- * contextual and depend on which tool was called.
+ *   A structured result object. The `message` property is shown to the user.
+ *   Additional properties (e.g. `task`, `goal`, `tasks`, `atRiskTasks`) are
+ *   contextual and depend on which tool was called.
  */
 function handleToolCall(name: string, args: any, state: TaskStore) {
   switch (name) {
@@ -434,34 +424,16 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
     case "get_reminders": {
       const now = new Date();
       const urgent = state.tasks.filter((t) => {
-        if (
-          t.status !== "pending" &&
-          t.status !== "in_progress" &&
-          t.status !== "overdue"
-        )
-          return false;
-        const diffHours =
-          (new Date(t.deadline).getTime() - now.getTime()) / (1000 * 60 * 60);
+        if (t.status !== "pending") return false;
+        const diffHours = (new Date(t.deadline).getTime() - now.getTime()) / (1000 * 60 * 60);
 
         switch (args.timeframe) {
           case "today":
-            return (
-              (t.status === "pending" || t.status === "in_progress" || t.status === "overdue") &&
-              diffHours <= 24
-            );
+  return (t.status === "pending" || t.status === "in_progress" || t.status === "overdue") && diffHours <= 24;
           case "tomorrow":
-            return (
-              (t.status === "pending" || t.status === "in_progress" || t.status === "overdue") &&
-              diffHours > 24 &&
-              diffHours <= 48
-            );
+  return (t.status === "pending" || t.status === "in_progress" || t.status === "overdue") && diffHours > 24 && diffHours <= 48;
           case "this_week":
-            return (
-              (t.status === "pending" || t.status === "in_progress" || t.status === "overdue") &&
-              diffHours > 48 &&
-              diffHours <= 168
-            );
-          default:
+  return (t.status === "pending" || t.status === "in_progress" || t.status === "overdue") && diffHours > 48 && diffHours <= 168;
             // When no timeframe specified, surface urgent/high priority items.
             return t.priority === "urgent" || t.priority === "high";
         }
@@ -600,8 +572,7 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
       if (goal.milestones.length === 0) {
         return {
           success: false,
-          message:
-            'This goal has no milestones yet. Add milestones first using the "add_goal" tool with a milestones array.',
+          message: 'This goal has no milestones yet. Add milestones first using the "add_goal" tool with a milestones array.',
         };
       }
 
@@ -644,13 +615,6 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
       };
     }
 
-
-// ── delete_task ─────────────────────────────────────────────────────
-case "delete_task": {
-  const { id } = args;
-  state.tasks = state.tasks.filter((t) => t.id !== id);
-  return { success: true, message: "Task deleted." };
-}
     // ── reschedule_at_risk_tasks ────────────────────────────────────────────
     case "reschedule_at_risk_tasks": {
       const { riskThresholdHours = 24 } = args;
@@ -710,29 +674,30 @@ case "delete_task": {
   }
 }
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Public orchestration function
+//  Public orchestration function
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * Send a user message to the Gemini AI agent and return the result.
  *
  * Conversation flow:
- * 1. Load fresh state from SQLite (ensures we start from the persisted truth).
- * 2. Append the user's message to chat history.
- * 3. Send system prompt + full history to Gemini with tool definitions.
- * 4. If Gemini requests tool calls → execute each one against a state clone,
- *    collect the results, send them back to Gemini for a follow-up response.
- * 5. Append the AI's final reply to chat history.
- * 6. Persist the updated state to SQLite.
- * 7. Return the response text, updated task list, and updated goal list.
+ *  1. Load fresh state from SQLite (ensures we start from the persisted truth).
+ *  2. Append the user's message to chat history.
+ *  3. Send system prompt + full history to Gemini with tool definitions.
+ *  4. If Gemini requests tool calls → execute each one against a state clone,
+ *     collect the results, send them back to Gemini for a follow-up response.
+ *  5. Append the AI's final reply to chat history.
+ *  6. Persist the updated state to SQLite.
+ *  7. Return the response text, updated task list, and updated goal list.
  *
  * @param {string} userMessage - Raw text from the user.
  *
  * @returns {Promise<ChatResult>} Structured result sent back to the client:
- * @property {string} response - AI's natural-language reply to display in chat.
- * @property {Task[]} tasks - Updated task list after any tool mutations.
- * @property {Goal[]} goals - Updated goal list after any tool mutations.
+ *   @property {string} response - AI's natural-language reply to display in chat.
+ *   @property {Task[]}  tasks    - Updated task list after any tool mutations.
+ *   @property {Goal[]}  goals    - Updated goal list after any tool mutations.
  */
 export async function chat(userMessage: string) {
   // Step 1: Load the persisted state as our starting point for this turn.
@@ -770,10 +735,10 @@ export async function chat(userMessage: string) {
   });
 
   // Separate text parts (plain response) from function-call parts.
-  const toolCalls = (response?.candidates?.[0]?.content?.parts ?? []).filter(
+  const toolCalls = (response.candidates?.[0]?.content?.parts ?? []).filter(
     (p: any) => p.functionCall
   );
-  const textParts = (response?.candidates?.[0]?.content?.parts ?? []).filter(
+  const textParts = (response.candidates?.[0]?.content?.parts ?? []).filter(
     (p: any) => p.text
   );
 
@@ -806,7 +771,7 @@ export async function chat(userMessage: string) {
       ],
     });
 
-    const followUpText = (followUp?.candidates?.[0]?.content?.parts ?? [])
+    const followUpText = (followUp.candidates?.[0]?.content?.parts ?? [])
       .filter((p: any) => p.text)
       .map((p: any) => p.text)
       .join("");
@@ -831,8 +796,9 @@ export async function chat(userMessage: string) {
   return { response: fullResponse, tasks: finalTasks, goals: finalGoals };
 }
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper exports & utilities
+//  Helper exports & utilities
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -840,7 +806,7 @@ export async function chat(userMessage: string) {
  * Used by `GET /api/chat` to hydrate the client on initial load.
  *
  * @returns {{ tasks: Task[]; goals: Goal[]; chatHistory: Message[] }}
- * A read-only snapshot of the SQLite store.
+ *   A read-only snapshot of the SQLite store.
  */
 export function getStore() {
   // `loadState` returns `any` (CommonJS module); cast for downstream type safety.
@@ -852,8 +818,9 @@ export function getStore() {
   };
 }
 
+
 // ─────────────────────────────────────────────────────────────────────────────
-// Private utility functions
+//  Private utility functions
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -864,7 +831,7 @@ export function getStore() {
  * Sufficient for a single-user local app; not cryptographically unique.
  * For a multi-user production system, switch to UUID v7 or Snowflake IDs.
  *
- * @param {string} prefix - "task" or "goal" to namespace the ID.
+ * @param {string} prefix   - "task" or "goal" to namespace the ID.
  * @returns {string} A unique identifier string.
  */
 function generateId(prefix: string): string {
@@ -893,22 +860,20 @@ function formatDate(iso: string): string {
  * Parse a human-readable time estimate (e.g. "2 hours", "30 mins") into a number.
  *
  * @param {string} timeStr - Free-form time string from the user or AI.
- * @returns {number} Hours as a positive number. Returns 1 for unparseable / zero / negative inputs.
+ * @returns {number} Hours as a positive integer. Returns 1 for unparseable / zero / negative inputs.
  */
 function parseTimeEstimate(timeStr: string): number {
-  const lower = timeStr.toLowerCase();
-
-  // Handle "mins" / "minutes" — divide by 60 to convert to hours
-  if (lower.includes("min")) {
-    const parsed = parseInt(timeStr, 10);
-    if (!isNaN(parsed) && parsed > 0) return parsed / 60;
-    return 0.5; // default half-hour for vague minute estimates
-  }
-
-  // Handle decimal hours like "1.5 hours"
-  const parsed = parseFloat(timeStr);
-  if (!isNaN(parsed) && parsed > 0) return parsed;
-  return 1;
+ const lower = timeStr.toLowerCase();
+ // Handle "mins" / "minutes" — divide by 60 to get hours
+ if (lower.includes("min")) {
+  const parsed = parseInt(timeStr, 10);
+  if (!isNaN(parsed) && parsed > 0) return parsed / 60;
+  return 0.5; // default half-hour for vague minute estimates
+ }
+ // Handle decimal hours like "1.5 hours"
+ const parsed = parseFloat(timeStr);
+ if (!isNaN(parsed) && parsed > 0) return parsed;
+ return 1;
 }
 
 /**
@@ -951,8 +916,8 @@ function startOfWeek(date: Date): Date {
  * Calculate a suggested new deadline by adding a buffer to the original.
  * The buffer is `2 × riskThresholdHours` — generous enough for replanning.
  *
- * @param {string} originalDeadline - ISO deadline string of the at-risk task.
- * @param {number} riskThresholdHours - Hours currently used as the risk window.
+ * @param {string}  originalDeadline - ISO deadline string of the at-risk task.
+ * @param {number}  riskThresholdHours - Hours currently used as the risk window.
  * @returns {string} New ISO deadline string (original + buffer).
  */
 function suggestNewDeadline(originalDeadline: string, riskThresholdHours: number): string {

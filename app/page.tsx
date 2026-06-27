@@ -406,28 +406,32 @@ function TasksView({
   const pendingCount = tasks.filter((t) => t.status !== "completed").length;
   const completedCount = tasks.filter((t) => t.status === "completed").length;
 
-  async function toggleTask(id: string) {
-    setTasks((prev) =>
-      prev.map((t) =>
-        t.id === id
-          ? { ...t, status: t.status === "completed" ? "pending" : "completed" }
-          : t
-      )
-    );
-    try {
-      await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: id.includes("completed")
-            ? `complete todo id ${id}`
-            : `reopen task ${id}`,
-        }),
-      });
-    } catch {
-      // non-critical — optimistic UI update already applied
-    }
+ async function toggleTask(id: string) {
+  // Resolve the task's current status from the tasks prop (not the ID string)
+  const task = tasks.find((t) => t.id === id);
+  const isCompleting = task?.status !== "completed";
+
+  setTasks((prev) =>
+    prev.map((t) =>
+      t.id === id
+        ? { ...t, status: isCompleting ? "completed" : "pending" }
+        : t
+    )
+  );
+  try {
+    await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: isCompleting
+          ? `complete task ${id}`
+          : `reopen task ${id}`,
+      }),
+    });
+  } catch {
+    // non-critical — optimistic UI update already applied
   }
+ }
 
   async function deleteTask(id: string) {
     setTasks((prev) => prev.filter((t) => t.id !== id));

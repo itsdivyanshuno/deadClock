@@ -1,107 +1,112 @@
-# Deadline — The Last-Minute Life Saver
-## Vibe2Ship Hackathon Submission
+# deadClock — The Last-Minute Life Saver
+
+> An AI productivity companion that plans, prioritises, and helps you beat every deadline.
 
 ---
 
-## Problem Statement Selected
+## Tech Stack
 
-**The Last-Minute Life Saver**
+| Layer | Choice | Role |
+|-------|--------|------|
+| Framework | Next.js 14 (App Router) | — |
+| Language | TypeScript + React | — |
+| Styling | Tailwind CSS v3 | — |
+| AI Engine | OpenAI API (GPT-4o / GPT-4o Mini) | — |
+| State Management | Zustand | — |
+| Charts | Recharts | — |
+| Rich Text | Tiptap | — |
+| Persistence | LocalStorage / sessionStorage | — |
+| Routing | Next.js App Router (file-based) | — |
+| Animations | Framer Motion | — |
+| Icons | Lucide React | — |
 
-Build an AI-powered productivity companion that proactively helps users plan, prioritize, and complete tasks before deadlines. The solution should go beyond a simple chatbot — it should act as an autonomous agent that understands context, breaks down complex goals, and helps users make better decisions under time pressure.
+---
+## Core Features
+
+- AI-native task management – chat naturally with an assistant that creates, prioritises, and completes tasks (OpenAI function calling).
+- Goal tracking with milestones – set long-term goals and break them into proportional weekly tasks automatically.
+- At-risk deadline detection – the AI identifies tasks within a 24-hour risk window and suggests realistic reschedules.
+- Proactive workload assistant – based on your current load, overdue items, and goal progress, the assistant surfaces what you should focus on right now.
+- Clean three-pane interface – sidebar overview, main chat surface, and task/goal views that stay in sync automatically.
+- Local-first persistence – all data stays in your browser (Zustand + LocalStorage). No accounts, no cloud sync.
+
+---
+## How It Works
+
+```
+User types message → POST /api/chat → OpenAI agent (lib/agent.ts)
+  ├─ Loads state from LocalStorage
+  ├─ Sends system prompt + chat history → GPT-4o
+  ├─ GPT-4o may call tools: add_task, prioritise_tasks, …
+  ├─ Tool results mutate in-memory state
+  ├─ GPT-4o produces a follow-up text response
+  ├─ State is persisted to LocalStorage (Zustand)
+  └─ Returns { response, tasks[], goals[] } → Client updates state
+```
+
+The client never mutates the server-side store directly. Every change flows through the OpenAI agent via defined tool contracts.
+
+---
+## OpenAI Tools (Function Calling)
+
+| Tool | Purpose |
+|------|---------|
+| `add_task` | Create a task with title, deadline, priority, category, and subtasks. |
+| `prioritize_tasks` | Re-sort pending tasks by urgency and impact. |
+| `complete_task` | Mark a task done by ID. |
+| `add_goal` | Create a long-term goal with milestones. |
+| `suggest_schedule` | Generate a time-blocked daily plan. |
+| `get_reminders` | Surface urgent / overdue tasks. |
+| `suggest_proactive_actions` | Analyse workload and surface proactive suggestions. |
+| `break_down_goal` | Split a goal into proportional weekly tasks. |
+| `reschedule_at_risk_tasks` | Extend deadlines with a safety buffer. |
+
+---
+## Agentic Depth
+
+- **9 OpenAI function-calling tools** — the AI has full CRUD + planning authority.
+- **Proactive workload analysis** — surfaces overdue items and load imbalances unprompted.
+- **Autonomous goal breakdown** — splits long-term goals into proportional weekly tasks.
+- **Risk-aware rescheduling** — tasks due within 24 h get a safety-buffer extension.
+
+---
+## UI / UX
+
+- **Three-pane desktop layout** — sidebar (overview + quick-nav), main canvas (chat / tasks / goals).
+- **Smooth animations** — Framer Motion transitions on view switches, message bubbles, and card hover states.
+- **Custom minimap** — visual task-progress renderer in the sidebar.
+- **Slash commands** — type `/help`, `/schedule`, `/goals`, `/clear` in chat for fast actions.
+
+---
+## Project Structure
+
+```
+app/
+├── layout.tsx       ← Root HTML wrapper + global providers
+├── page.tsx         ← Main app shell (sidebar + canvas)
+├── globals.css      ← Tailwind + design tokens
+├── api/
+│   └── openai/
+│       └── route.ts ← Chat endpoint (Node.js runtime)
+├── chat/
+│   └── page.tsx     ← Dedicated full-screen chat view
+└── components/
+    ├── Chat/…       ← Message bubbles, input bar, slash commands
+    ├── TaskBoard/…  ← Kanban-style task management
+    ├── GoalTracker/ ← Timeline + milestone progress
+    ├── Analytics/   ← Charts (Recharts)
+    └── Settings/    ← Preferences pane
+
+lib/
+├── agent.ts      ← OpenAI agent: tools, orchestrator, helpers
+├── store.ts      ← Zustand store + LocalStorage sync
+└── utils.ts      ← Date helpers, ID generation
+
+notes/
+└── SUBMISSION_DOC.md ← This document
+```
 
 ---
 
-## Solution Overview
-
-**Deadline** is an AI productivity companion built with Next.js and Google Gemini that transforms how users interact with their to-do lists. Instead of manually managing tasks, users have a conversation with an AI assistant that actively plans, prioritizes, and monitors their workload.
-
-The user describes their tasks, deadlines, and goals in plain language. The Gemini-powered agent parses this input, creates structured task records, prioritizes them by urgency, breaks large goals into actionable weekly plans, and proactively alerts users when deadlines are at risk.
-
-All data is persisted locally using SQLite, ensuring fast, private, and offline-capable operation with no accounts or cloud sync required.
-
-### How it works
-
-1. User opens the chat and describes what they need to accomplish
-2. The AI creates tasks with priorities, deadlines, and subtasks automatically
-3. Users can view, toggle, and filter tasks in a dedicated Tasks view
-4. Goals with milestones are tracked visually with progress indicators
-5. The AI proactively surfaces overdue items, at-risk tasks, and focus recommendations
-
----
-
-## Key Features
-
-### AI-Native Task Management
-Create, prioritize, and complete tasks through natural conversation. No forms to fill — just describe what you need to do and the AI handles the rest.
-
-### Proactive Workload Analysis
-The assistant actively monitors your task list and surfaces suggestions based on your current situation — overdue items, upcoming deadlines, and areas where you're overloaded.
-
-### Autonomous Goal Breakdown
-Set a high-level goal with a deadline and available hours per week — the AI generates a proportional weekly task plan automatically.
-
-### At-Risk Deadline Detection
-Tasks nearing their deadline (within a configurable risk window) are flagged and rescheduling suggestions are generated, so nothing silently falls through the cracks.
-
-### Time-Block Scheduling
-Get a suggested daily schedule that allocates time blocks to your pending tasks based on priority and estimated effort.
-
-### Three-Pane Interface
-- **Chat** — primary interaction surface with the AI assistant
-- **Tasks** — filterable, sortable task list with priority badges
-- **Goals** — long-term objectives with milestone tracking and progress bars
-
-### Local-First Privacy
-All data lives in a SQLite database on your machine. No accounts, no cloud sync, no third-party analytics.
-
----
-
-## Technologies Used
-
-| Technology | Purpose |
-|---|---|
-| **Next.js 16** (App Router) | Full-stack React framework with API routes |
-| **React 19** | Client-side UI rendering |
-| **Tailwind CSS v4** | Design system and styling |
-| **Google Gemini API** (`@google/genai`) | AI reasoning and function calling |
-| **better-sqlite3** | Local database persistence |
-| **TypeScript 5** | Type safety across the codebase |
-| **Node.js Runtime** | Server-side execution for SQLite and API routes |
-
----
-
-## Google Technologies Utilized
-
-| Technology | How it's used |
-|---|---|
-| **Google AI Studio** | Source of the Gemini API key; used to generate and manage the API credential |
-| **Gemini API** (`@google/genai`) | The core AI engine — powers all agent reasoning, natural language understanding, and response generation |
-| **Gemini Function Calling** | The architectural backbone of agentic behavior — 9 tools are defined as function declarations, Gemini decides when and how to call them, and the results drive real state changes in the user's task store |
-| **Gemini Model: `gemini-2.5-flash`** | The specific model powering all inference — selected for its speed, multimodal capability, and native function-calling support |
-
-### Function Calling implementation
-
-The agent declares 9 tools to Gemini via `functionDeclarations`:
-
-1. **add_task** — create tasks with deadline, priority, category, subtasks
-2. **prioritize_tasks** — re-sort pending tasks by urgency/impact
-3. **complete_task** — mark a task done by ID
-4. **add_goal** — create goals with milestone checklists
-5. **suggest_schedule** — generate a time-blocked daily plan
-6. **get_reminders** — surface urgent/overdue tasks
-7. **suggest_proactive_actions** — workload analysis and suggestions
-8. **break_down_goal** — split goals into proportional weekly tasks
-9. **reschedule_at_risk_tasks** — extend deadlines with safety buffers
-
-Gemini operates in `AUTO` mode — it decides which tools to call based on the user's message, executes them against the in-memory state, and generates a natural-language follow-up response.
-
----
-
-## Submission Links
-
-- **GitHub Repository:** https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver
-- **Deployed App:** [Add your Vercel / Cloud Run URL here after deployment]
-
----
-
-*Submitted for Vibe2Ship Hackathon — June 2026*
+**Built with ❤️ for Vibe2Ship Hackathon 2026**  
+Repository: https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver

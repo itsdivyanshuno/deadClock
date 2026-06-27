@@ -1,410 +1,209 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deadline — Vibe2Ship Hackathon Submission</title>
-  <style>
-    /* ── Base ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <title>deadClock — The Last-Minute Life Saver — Submission Preview</title>
+      <style>
+        /* ── Reset ────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        /* ── Base ─────────────────────────────────────────────── */
+        body {
+          font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+                       "Helvetica Neue", Arial, sans-serif;
+          font-size: 15px;
+          line-height: 1.7;
+          color: #1c1917;
+          background: #fafaf9;
+          padding: 2rem 1rem;
+        }
+        .container {
+          max-width: 820px;
+          margin: 0 auto;
+        }
+        /* ── Typography ───────────────────────────────────────── */
+        h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: .5rem; }
+        h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em;
+              margin: 2.5rem 0 1rem; padding-bottom: .5rem;
+              border-bottom: 2px solid #e7e5e4; }
+        p { margin-bottom: 1rem; }
+        blockquote { border-left: 4px solid #ea580c; padding: .5rem 1rem;
+                      background: #fff7ed; border-radius: 0 8px 8px 0;
+                      font-style: italic; margin-bottom: 1.5rem; }
+        code { font-family: "JetBrains Mono", "Fira Code", monospace;
+                font-size: .85em; background: #f1f5f9; padding: .15em .4em;
+                border-radius: 4px; }
+        pre { background: #1e293b; color: #e2e8f0; padding: 1.25rem;
+               border-radius: 12px; overflow-x: auto; margin-bottom: 1.5rem;
+               font-size: .82rem; line-height: 1.6; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        th { text-align: left; font-size: .75rem; text-transform: uppercase;
+              letter-spacing: .06em; color: #57534e; padding: .5rem .75rem;
+              border-bottom: 2px solid #e7e5e4; }
+        td { padding: .55rem .75rem; border-bottom: 1px solid #f5f5f4;
+              font-size: .9rem; vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        ul { padding-left: 1.5rem; margin-bottom: 1rem; }
+        li { margin-bottom: .4rem; }
+        hr { border: none; border-top: 1px solid #e7e5e4; margin: 2rem 0; }
+        .meta { color: #57534e; font-size: .9rem; }
+        a { color: #1e293b; text-decoration: underline; text-underline-offset: 2px; }
+        a:hover { color: #ea580c; }
+        /* ── Header ────────────────────────────────────────────── */
+        header { margin-bottom: 3rem; }
+        .slug { display: inline-block; font-size: .7rem; font-weight: 600;
+                text-transform: uppercase; letter-spacing: .08em;
+                background: #1e293b; color: white; padding: .3rem .7rem;
+                border-radius: 999px; margin-bottom: 1rem; }
+        .tech-pills { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+        .pill { font-size: .78rem; font-weight: 500; padding: .3rem .75rem;
+                border-radius: 999px; background: #f1f5f9; color: #1e293b;
+                border: 1px solid #e7e5e4; }
+        .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #e7e5e4;
+                   font-size: .85rem; color: #57534e; }
+        @media (max-width: 600px) {
+          body { padding: 1rem .75rem; }
+          h1 { font-size: 1.5rem; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <header>
+          <span class="slug">Hackathon Submission</span>
+          <h1>deadClock — The Last-Minute Life Saver</h1>
+          <p class="meta">An AI productivity companion that plans, prioritises, and helps you beat every deadline.</p>
+          <div class="tech-pills">
+            <span class="pill">Framework: Next.js 14 (App Router)</span><span class="pill">Language: TypeScript + React</span><span class="pill">Styling: Tailwind CSS v3</span><span class="pill">AI Engine: OpenAI API (GPT-4o / GPT-4o Mini)</span><span class="pill">State Management: Zustand</span><span class="pill">Charts: Recharts</span><span class="pill">Rich Text: Tiptap</span><span class="pill">Persistence: LocalStorage / sessionStorage</span><span class="pill">Routing: Next.js App Router (file-based)</span><span class="pill">Animations: Framer Motion</span><span class="pill">Icons: Lucide React</span>
+          </div>
+        </header>
 
-    body {
-      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-      font-size: 15px;
-      line-height: 1.7;
-      color: #1e293b;
-      background: #f8fafc;
-    }
+        <hr />
 
-    /* ── Page wrapper ── */
-    .page {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 48px 32px 80px;
-    }
+        <!-- Features -->
+        <h2>🚀 Core Features</h2>
+        <ul>
+          <li>AI-native task management – chat naturally with an assistant that creates, prioritises, and completes tasks (OpenAI function calling).</li><li>Goal tracking with milestones – set long-term goals and break them into proportional weekly tasks automatically.</li><li>At-risk deadline detection – the AI identifies tasks within a 24-hour risk window and suggests realistic reschedules.</li><li>Proactive workload assistant – based on your current load, overdue items, and goal progress, the assistant surfaces what you should focus on right now.</li><li>Clean three-pane interface – sidebar overview, main chat surface, and task/goal views that stay in sync automatically.</li><li>Local-first persistence – all data stays in your browser (Zustand + LocalStorage). No accounts, no cloud sync.</li>
+        </ul>
 
-    /* ── Cover ── */
-    .cover {
-      text-align: center;
-      padding: 56px 24px 48px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 40%, #06b6d4 100%);
-      color: white;
-      margin-bottom: 48px;
-    }
+        <hr />
 
-    .cover .icon   { font-size: 56px; margin-bottom: 12px; }
-    .cover h1      { font-size: 36px; font-weight: 800; letter-spacing: -0.5px; }
-    .cover .sub    { font-size: 15px; opacity: .85; margin-top: 6px; }
-    .cover .badge  {
-      display: inline-block;
-      margin-top: 18px;
-      padding: 5px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.18);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .4px;
-    }
+        <!-- How it works -->
+        <h2>⚙️ How It Works</h2>
+        <p>deadClock isn't a todo list you have to maintain. It's an AI agent that has a <em>conversation</em> with you:</p>
+        <pre><code>User types message
+  → POST /api/chat
+  → OpenAI agent orchestrator (lib/agent.ts)
+  → Load state from LocalStorage / Zustand
+  → Send system prompt + chat history → GPT-4o
+  → GPT-4o may call tools (add_task, prioritise_tasks, …)
+  → Tool results mutate in-memory state
+  → GPT-4o produces natural-language follow-up
+  → State persisted to LocalStorage
+  → Returns { response, tasks[], goals[] }
+  → Client updates UI</code></pre>
 
-    /* ── Section headings ── */
-    h2 {
-      font-size: 20px;
-      font-weight: 700;
-      color: #0f172a;
-      margin: 40px 0 14px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    h2:first-of-type { margin-top: 0; }
+        <hr />
 
-    h3 {
-      font-size: 15px;
-      font-weight: 700;
-      color: #6366f1;
-      margin: 24px 0 8px;
-    }
+        <!-- Tools -->
+        <h2>🤖 OpenAI Tools (Function Calling)</h2>
+        <table>
+          <tr><th>Tool</th><th>What it does</th></tr>
+          <tr><td><code>add_task</code></td><td>Create a task with title, deadline, priority, category, and subtasks.</td></tr><tr><td><code>prioritize_tasks</code></td><td>Re-sort pending tasks by urgency and impact.</td></tr><tr><td><code>complete_task</code></td><td>Mark a task done by ID.</td></tr><tr><td><code>add_goal</code></td><td>Create a long-term goal with milestones.</td></tr><tr><td><code>suggest_schedule</code></td><td>Generate a time-blocked daily plan.</td></tr><tr><td><code>get_reminders</code></td><td>Surface urgent / overdue tasks.</td></tr><tr><td><code>suggest_proactive_actions</code></td><td>Analyse workload and surface proactive suggestions.</td></tr><tr><td><code>break_down_goal</code></td><td>Split a goal into proportional weekly tasks.</td></tr><tr><td><code>reschedule_at_risk_tasks</code></td><td>Extend deadlines with a safety buffer.</td></tr>
+        </table>
 
-    p { margin-bottom: 12px; color: #334155; }
+        <hr />
 
-    /* ── Problem statement box ── */
-    .callout {
-      background: #eef2ff;
-      border-left: 4px solid #6366f1;
-      border-radius: 0 12px 12px 0;
-      padding: 18px 22px;
-      margin: 16px 0 24px;
-    }
-    .callout p { margin: 0; color: #3730a3; font-weight: 500; }
+        <!-- Agentic features -->
+        <h2>🧠 Agentic Depth</h2>
+        <ul>
+          <li><strong>9 OpenAI function-calling tools</strong> — the AI has full CRUD + planning authority over your tasks and goals.</li>
+          <li><strong>Proactive workload analysis</strong> — surfaces overdue items, load imbalances, and lagging goals unprompted.</li>
+          <li><strong>Autonomous goal breakdown</strong> — splits long-term goals into proportional weekly tasks based on your available hours.</li>
+          <li><strong>Risk-aware rescheduling</strong> — tasks due within 24 hours automatically get a safety-buffer deadline extension.</li>
+        </ul>
 
-    /* ── Feature grid ── */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 14px;
-      margin: 20px 0;
-    }
+        <hr />
 
-    .feature-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 12px;
-      padding: 18px 20px;
-      transition: box-shadow .15s;
-    }
-    .feature-card:hover { box-shadow: 0 4px 18px rgba(99,102,241,.12); }
-    .feature-card .emoji { font-size: 24px; margin-bottom: 6px; }
-    .feature-card h4   { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-    .feature-card p    { font-size: 12.5px; color: #64748b; margin: 0; }
+        <!-- UI -->
+        <h2>🎨 UI / UX</h2>
+        <ul>
+          <li><strong>Three-pane desktop layout</strong> — sidebar (overview + nav), main canvas (chat / tasks / goals panels).</li>
+          <li><strong>Smooth animations</strong> — Framer Motion transitions on view switches, message bubbles, and card hover states.</li>
+          <li><strong>Custom minimap</strong> — minimap-style SVG based task view on the canvas.</li>
+          <li><strong>Slash commands</strong> — type <code>/help</code>, <code>/schedule</code>, <code>/goals</code>, <code>/clear</code> in chat for fast actions.</li>
+        </ul>
 
-    /* ── Tables ── */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 14px 0 22px;
-      font-size: 13.5px;
-    }
-    thead tr { background: #f1f5f9; }
-    th {
-      text-align: left;
-      padding: 10px 14px;
-      font-weight: 700;
-      color: #475569;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    td {
-      padding: 10px 14px;
-      border-bottom: 1px solid #f1f5f9;
-      color: #334155;
-      vertical-align: top;
-    }
-    tr:last-child td { border-bottom: none; }
-    td:first-child { font-weight: 600; color: #0f172a; white-space: nowrap; }
+        <hr />
 
-    /* ── Code block ── */
-    code {
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-      font-size: 12.5px;
-      background: #f1f5f9;
-      padding: 1px 6px;
-      border-radius: 4px;
-      color: #6366f1;
-    }
+        <!-- Project structure -->
+        <h2>📁 Project Structure</h2>
+        <pre><code>app/
+├── layout.tsx       ← Root HTML wrapper + global providers
+├── page.tsx         ← Main app shell (sidebar + canvas)
+├── globals.css      ← Tailwind + design tokens
+├── api/
+│   └── chat/
+│       └── route.ts ← Chat endpoint (Node.js runtime)
+├── chat/
+│   └── page.tsx     ← Dedicated full-screen chat view
+└── components/
+     ├── Sidebar/…   ← Nav, goal cards, task overview
+     ├── Chat/…      ← Message bubbles, input bar, slash commands
+     ├── TaskBoard/  ← Kanban-style task management
+     ├── GoalTracker/← Timeline + milestone progress
+     └── Settings/   ← Preferences pane
 
-    /* ── Flow diagram ── */
-    .flow {
-      background: #0f172a;
-      border-radius: 12px;
-      padding: 24px 28px;
-      margin: 20px 0;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: #e2e8f0;
-      white-space: pre;
-      overflow-x: auto;
-      line-height: 1.6;
-    }
-    .flow .kw  { color: #c084fc; } /* purple */
-    .flow .fn  { color: #67e8f9; } /* cyan */
-    .flow .cm  { color: #64748b; font-style: italic; } /* comment */
+lib/
+├── agent.ts      ← OpenAI agent: tools, orchestrator, helpers
+├── store.ts      ← Zustand store + sessionStorage sync
+└── utils.ts      ← Date helpers, ID generation
 
-    /* ── Tool list ── */
-    .tool-list { list-style: none; margin: 12px 0 20px; }
-    .tool-list li {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 13.5px;
-    }
-    .tool-list li:last-child { border-bottom: none; }
-    .tool-list code { font-size: 12px; }
+notes/
+└── SUBMISSION_DOC.md ← This document</code></pre>
 
-    /* ── Step list ── */
-    .step-list { list-style: none; counter-reset: step; margin: 14px 0; }
-    .step-list li {
-      counter-increment: step;
-      display: flex;
-      gap: 12px;
-      margin-bottom: 10px;
-      font-size: 13.5px;
-    }
-    .step-list li::before {
-      content: counter(step);
-      flex-shrink: 0;
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      background: #6366f1;
-      color: white;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1px;
-    }
+        <hr />
 
-    /* ── Footer ── */
-    .footer {
-      margin-top: 56px;
-      padding-top: 20px;
-      border-top: 1px solid #e2e8f0;
-      text-align: center;
-      font-size: 12px;
-      color: #94a3b8;
-    }
-    .footer a { color: #6366f1; text-decoration: none; }
-    .footer a:hover { text-decoration: underline; }
+        <!-- Architecture notes -->
+        <h2>📐 Architecture Notes</h2>
+        <ul>
+          <li><strong>OpenAI-first AI layer.</strong> `chat()` in `lib/agent.ts` is the single entry point — it loads state, calls GPT-4o, dispatches function calls, and returns structured tool results.</li>
+          <li><strong>Client is a thin orchestrator.</strong> `app/page.tsx` holds UI state and delegates to a single fetch against <code>/api/chat</code>.</li>
+          <li><strong>Local-first.</strong> No accounts, no cloud sync, no cookies. State is in Zustand + sessionStorage.</li>
+          <li><strong>Runtime-aware routing.</strong> The API route declares <code>export const runtime = "nodejs"</code> so the OpenAI SDK runs on the server, not the Edge.</li>
+        </ul>
 
-    /* ── Link button ── */
-    .link-row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 14px 0 8px;
-    }
-    .link-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 18px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: opacity .15s;
-    }
-    .link-btn:hover { opacity: .85; }
-    .link-btn.primary { background: #6366f1; color: white; }
-    .link-btn.secondary { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
-  </style>
-</head>
-<body>
-<div class="page">
+        <hr />
 
-  <!-- ══════════════════════════ COVER ══════════════════════════ -->
-  <div class="cover">
-    <div class="icon">⚡</div>
-    <h1>Deadline</h1>
-    <p class="sub">The Last-Minute Life Saver</p>
-    <span class="badge">Vibe2Ship Hackathon — June 2026</span>
-  </div>
+        <!-- Getting started -->
+        <h2>🔧 Getting Started</h2>
+        <pre><code>git clone https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver.git
+cd vibe2ship-lastminute-lifesaver
+npm install
+cp .env.local.example .env.local   # paste your OpenAI key
+npm run dev</code></pre>
+        <p>Open <a href="http://localhost:3000">http://localhost:3000</a> and tell the AI about your day.</p>
 
-  <!-- ══════════════════════════ LINKS ═════════════════════════ -->
-  <div class="link-row">
-    <a class="link-btn primary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#128279; GitHub Repository</a>
-    <a class="link-btn secondary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#128640; Live Demo</a>
-  </div>
+        <hr />
 
-  <!-- ══════════════════════════ PROBLEM STATEMENT ══════════════ -->
-  <h2>📌 Problem Statement Selected</h2>
+        <h2>🏆 What's Inside</h2>
+        <table>
+          <tr><th>Area</th><th>Highlights</th></tr>
+          <tr><td>Agentic depth</td><td>9 OpenAI tools, proactive suggestions, autonomous goal breakdown, risk-aware rescheduling</td></tr>
+          <tr><td>Local-first</td><td>Zustand + sessionStorage, no accounts, no cloud, no cookies</td></tr>
+          <tr><td>Performance</td><td>Turbopack (Next 14), client-side routing, Framer Motion GPU-accelerated</td></tr>
+          <tr><td>Code quality</td><td>JSDoc on every public function, typed interfaces, explicit error contracts</td></tr>
+        </table>
 
-  <div class="callout">
-    <p><strong>The Last-Minute Life Saver</strong> — Build an AI-powered productivity companion that proactively helps users plan, prioritize, and complete tasks before deadlines. The solution should act as an autonomous agent that understands context, breaks down complex goals, and helps users make better decisions under time pressure.</p>
-  </div>
-
-  <!-- ══════════════════════════ SOLUTION OVERVIEW ══════════════ -->
-  <h2>💡 Solution Overview</h2>
-
-  <p><strong>Deadline</strong> is an AI productivity companion built with Next.js and Google Gemini that transforms how users interact with their task lists. Instead of manually creating and sorting tasks, users have a conversation with an AI assistant that <em>actively plans, prioritizes, and monitors</em> their workload.</p>
-
-  <p>The user describes their tasks, deadlines, and goals in plain language. The Gemini-powered agent parses this input, creates structured task records, ranks them by urgency, breaks large goals into actionable weekly plans, and proactively alerts users when deadlines are at risk.</p>
-
-  <p>All data is persisted locally using SQLite, ensuring fast, private, and offline-capable operation — no accounts, no cloud sync, no third-party storage required.</p>
-
-  <h3>How it works</h3>
-  <ol class="step-list">
-    <li>User opens the chat and describes what they need to accomplish</li>
-    <li>The AI creates tasks with priorities, deadlines, and subtasks automatically</li>
-    <li>Users can view, filter, and toggle tasks in a dedicated Tasks view</li>
-    <li>Goals with milestones are tracked visually with progress indicators</li>
-    <li>The AI proactively surfaces overdue items, at-risk tasks, and focus recommendations</li>
-  </ol>
-
-  <!-- ══════════════════════════ KEY FEATURES ══════════════════ -->
-  <h2>✨ Key Features</h2>
-
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="emoji">🤖</div>
-      <h4>AI-Native Task Management</h4>
-      <p>Create, prioritize, and complete tasks through natural conversation. No forms to fill — just describe what you need.</p>
-    </div>
-    <div class="feature-card">
-      <div class="emoji">🧠</div>
-      <h4>Proactive Workload Analysis</h4>
-      <p>The assistant actively monitors your list and surfaces suggestions — overdue items, upcoming deadlines, and overloaded areas.</p>
-    </div>
-    <div class="feature-card">
-      <div class="emoji">🎯</div>
-      <h4>Autonomous Goal Breakdown</h4>
-      <p>Set a goal with a deadline and available hours per week — the AI generates a proportional weekly task plan automatically.</p>
-    </div>
-    <div class="feature-card">
-      <div class="emoji">⚠️</div>
-      <h4>At-Risk Deadline Detection</h4>
-      <p>Tasks nearing their deadline are flagged and rescheduling suggestions are generated before they slip through the cracks.</p>
-    </div>
-    <div class="feature-card">
-      <div class="emoji">📅</div>
-      <h4>Time-Block Scheduling</h4>
-      <p>Get a suggested daily schedule with time blocks allocated by priority and estimated effort.</p>
-    </div>
-    <div class="feature-card">
-      <div class="emoji">💬</div>
-      <h4>Three-Pane Interface</h4>
-      <p>Chat surface, filterable task list, and goal tracker with progress bars — all in sync automatically.</p>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════ TECHNOLOGIES ══════════════════ -->
-  <h2>🛠️ Technologies Used</h2>
-
-  <table>
-    <thead>
-      <tr><th>Technology</th><th>Purpose</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>Next.js 16 (App Router)</td><td>Full-stack React framework with API routes</td></tr>
-      <tr><td>React 19</td><td>Client-side UI rendering and state management</td></tr>
-      <tr><td>Tailwind CSS v4</td><td>Design system and component styling</td></tr>
-      <tr><td>Google Gemini API</td><td>AI reasoning, natural language understanding, and function calling</td></tr>
-      <tr><td>better-sqlite3</td><td>Local SQLite database for task, goal, and chat persistence</td></tr>
-      <tr><td>TypeScript 5</td><td>Type safety across the entire codebase</td></tr>
-      <tr><td>Node.js Runtime</td><td>Server-side execution for SQLite and chat API routes</td></tr>
-    </tbody>
-  </table>
-
-  <!-- ══════════════════════════ GOOGLE TECHNOLOGIES ═══════════ -->
-  <h2>🌐 Google Technologies Utilized</h2>
-
-  <table>
-    <thead>
-      <tr><th>Technology</th><th>How it's used</th></tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Google AI Studio</td>
-        <td>Source of the Gemini API key — used to generate and manage the API credential for the application</td>
-      </tr>
-      <tr>
-        <td>Gemini API <code>@google/genai</code></td>
-        <td>The core AI engine powering all agent reasoning, natural language understanding, and response generation</td>
-      </tr>
-      <tr>
-        <td>Gemini Function Calling</td>
-        <td>The architectural backbone of agentic behavior — 9 tools are declared as function definitions. Gemini decides when and how to call them; results drive real state changes in the user's task store</td>
-      </tr>
-      <tr>
-        <td>Gemini Model <code>gemini-2.5-flash</code></td>
-        <td>The specific LLM powering all inference — selected for speed, multimodal capability, and native function-calling support</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <h3>Function Calling tools</h3>
-  <p>Nine tools are declared to Gemini via <code>functionDeclarations</code>. Gemini operates in <code>AUTO</code> mode — it decides which tools to invoke based on the user's message:</p>
-
-  <ul class="tool-list">
-    <li><code>add_task</code> — create tasks with deadline, priority, category, and subtasks</li>
-    <li><code>prioritize_tasks</code> — re-sort pending tasks by urgency and impact</li>
-    <li><code>complete_task</code> — mark a task as completed by ID</li>
-    <li><code>add_goal</code> — create long-term goals with milestone checklists</li>
-    <li><code>suggest_schedule</code> — generate a time-blocked daily plan for pending tasks</li>
-    <li><code>get_reminders</code> — surface urgent or overdue tasks within a selected timeframe</li>
-    <li><code>suggest_proactive_actions</code> — analyse workload and surface proactive suggestions</li>
-    <li><code>break_down_goal</code> — split a high-level goal into proportional weekly tasks</li>
-    <li><code>reschedule_at_risk_tasks</code> — propose realistic new deadlines for at-risk tasks</li>
-  </ul>
-
-  <!-- ══════════════════════════ ARCHITECTURE ══════════════════ -->
-  <h2>🏗️ Architecture</h2>
-
-  <p>All AI logic lives server-side. The client is a thin orchestrator that delegates to a single endpoint.</p>
-
-  <div class="flow"><span class="cm">// Data flow — every mutation goes through the AI agent</span>
-<span class="kw">User types message</span>
-       │
-       ▼
-<span class="fn">POST /api/chat { message }</span>
-  │  • loadState()  ← SQLite
-  │  • system prompt + history → Gemini
-  │  • Gemini calls tools (add_task, …)
-  │  • Tools mutate in-memory state
-  │  • Gemini → follow-up text response
-  │  • saveState()  → SQLite (1 transaction)
-       │
-       ▼
- { response, tasks[], goals[] }  ──►  Client updates UI</div>
-
-  <h3>Key design decisions</h3>
-  <ul class="step-list" style="list-style:none; counter-reset:none;">
-    <li style="list-style:none; counter-increment:none; display:block;">
-      <strong>Server-side only mutations</strong> — the client never writes to the store directly; every change flows through <code>/api/chat</code>.
-    </li>
-    <li style="list-style:none; counter-increment:none; display:block; margin-top:8px;">
-      <strong>Append-and-replace persistence</strong> — <code>saveState()</code> clears all rows then re-inserts them in a single transaction, keeping the database a perfect snapshot of the agent's last turn.
-    </li>
-    <li style="list-style:none; counter-increment:none; display:block; margin-top:8px;">
-      <strong>Local-first</strong> — no accounts, no cloud sync, no cookies. SQLite is the only backing store.
-    </li>
-  </ul>
-
-  <!-- ══════════════════════════ SUBMISSION ════════════════════ -->
-  <h2>🔗 Submission Links</h2>
-
-  <div class="link-row" style="margin-top:0;">
-    <a class="link-btn primary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#128187; GitHub Repository</a>
-    <a class="link-btn secondary" href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver" target="_blank">&#127918; Deployed App</a>
-  </div>
-
-  <!-- ══════════════════════════ FOOTER ════════════════════════ -->
-  <div class="footer">
-    Submitted for <a href="https://vibe2ship.com" target="_blank">Vibe2Ship</a> Hackathon — June 2026<br/>
-    Built with Next.js + Google Gemini by Divyansh
-  </div>
-
-</div>
-</body>
-</html>
+        <div class="footer">
+          <p><strong>Built for the Vibe2Ship Hackathon</strong> — June 22–29, 2026</p>
+          <p>
+            <a href="https://github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver">
+              github.com/itsdivyanshuno/vibe2ship-lastminute-lifesaver
+            </a>
+          </p>
+        </div>
+      </div>
+    </body>
+    </html>
