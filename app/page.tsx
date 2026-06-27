@@ -28,12 +28,16 @@ export default function Home() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [view, setView] = useState<"chat" | "tasks" | "goals">("chat");
-  const [greeting, setGreeting] = useState(getGreeting());
+  const [greeting, setGreeting] = useState<string>('');
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    setGreeting(getGreeting());
+  }, []);
 
   async function sendMessage(e: React.FormEvent) {
     e.preventDefault();
