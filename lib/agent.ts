@@ -462,7 +462,7 @@ export async function chat(userMessage: string) {
   ];
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     config: { tools: taskTools, toolConfig: { functionCallingConfig: { mode: "AUTO" } } },
     contents: messages,
   });
@@ -485,7 +485,7 @@ export async function chat(userMessage: string) {
     }
 
     const followUp = await ai.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-2.5-flash",
       contents: [
         ...messages,
         { role: "model", parts: toolCalls },
