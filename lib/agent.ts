@@ -665,23 +665,12 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
         return { success: true, message: "No tasks found.", tasks: [] };
       }
       const lines = state.tasks.map((t) => {
-<<<<<<< Updated upstream
         const icon = t.status === "completed" ? "✅" : t.status === "overdue" ? "🚨" : "⬜";
         return `${icon} "${t.title}" [${t.id}] | ${t.priority} | due ${(t.deadline ?? "").slice(0, 10)} | ${t.status}`;
       });
       return {
         success: true,
         message: `Found ${state.tasks.length} task(s):\n${lines.join("\n")}`,
-=======
-        const status = t.status === "completed" ? "✅" : t.status === "overdue" ? "🚨" : "⬜";
-        return `${status} "${t.title}" [id:${t.id}] | ${t.priority} | due: ${t.deadline?.slice(0, 10) ?? "no date"} | ${t.status}`;
-      });
-      return {
-        success: true,
-        message: `Found ${state.tasks.length} task(s):
-${lines.join("
-")}`,
->>>>>>> Stashed changes
         tasks: state.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status, priority: t.priority, deadline: t.deadline })),
       };
     }

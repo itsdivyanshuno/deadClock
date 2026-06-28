@@ -150,9 +150,11 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
     async (id: string) => {
       const task = tasks.find((t) => t.id === id);
       const completing = task?.status !== "completed";
-      setTasks((p) =>
-        p.map((t) => (t.id === id ? { ...t, status: completing ? "completed" : "pending" } : t))
-      );
+  setTasks((p) =>
+    p.map((t) =>
+      t.id === id ? { ...t, status: completing ? "completed" : "pending" } : t
+    )
+  );
       try {
         await fetch("/api/chat", {
           method: "POST",
