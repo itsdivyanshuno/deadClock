@@ -659,6 +659,21 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
       state.tasks = state.tasks.filter((t) => t.id !== id);
       return { success: true, message: "Task deleted." };
     }
+    // ── list_tasks ─────────────────────────────────────────────────────
+    case "list_tasks": {
+      if (state.tasks.length === 0) {
+        return { success: true, message: "No tasks found.", tasks: [] };
+      }
+      const lines = state.tasks.map((t) => {
+        const icon = t.status === "completed" ? "✅" : t.status === "overdue" ? "🚨" : "⬜";
+        return `${icon} "${t.title}" [${t.id}] | ${t.priority} | due ${(t.deadline ?? "").slice(0, 10)} | ${t.status}`;
+      });
+      return {
+        success: true,
+        message: `Found ${state.tasks.length} task(s):\n${lines.join("\n")}`,
+        tasks: state.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status, priority: t.priority, deadline: t.deadline })),
+      };
+    }
     // ── reschedule_at_risk_tasks ────────────────────────────────────────────
     case "reschedule_at_risk_tasks": {
       const { riskThresholdHours = 24 } = args;
