@@ -1,13 +1,22 @@
 import { cn } from "@/lib/utils"
 
-function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
+interface SkeletonProps extends React.ComponentProps<"div"> {
+  shimmer?: boolean
+}
+
+function Skeleton({ className, shimmer, ...props }: SkeletonProps) {
+  const base = "rounded-md";
+  const mode = shimmer
+    ? cn(base, "skeleton-shimmer", "bg-border")
+    : cn(base, "animate-pulse", "bg-muted");
+
   return (
     <div
       data-slot="skeleton"
-      className={cn("animate-pulse rounded-md bg-muted", className)}
+      className={cn(mode, className)}
       {...props}
     />
-  )
+  );
 }
 
-export { Skeleton }
+export { Skeleton };

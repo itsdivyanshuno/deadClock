@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Target, Calendar, ChevronDown, ChevronUp, CheckCircle2, Circle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, tier2Hover } from "@/lib/utils";
 import type { Goal } from "@/lib/agent";
 import { GoalCardSkeleton } from "@/components/shared/loading-skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -17,7 +17,12 @@ interface GoalsViewProps {
   loading?: boolean;
 }
 
-function GoalCard({ goal, expanded, onToggleExpand, onToggleMilestone }: {
+function GoalCard({
+  goal,
+  expanded,
+  onToggleExpand,
+  onToggleMilestone,
+}: {
   goal: Goal;
   expanded: boolean;
   onToggleExpand: () => void;
@@ -31,10 +36,13 @@ function GoalCard({ goal, expanded, onToggleExpand, onToggleMilestone }: {
   return (
     <motion.div
       layout
+      whileHover={{ y: -2, transition: { duration: 0.15 } }}
+      whileTap={{ scale: 0.995 }}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.97 }}
-      className="rounded-xl border border-border bg-surface overflow-hidden hover:shadow-sm transition-shadow"
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className="rounded-xl border border-border bg-surface overflow-hidden hover:shadow-md hover:shadow-border/25 hover:border-border-strong hover:border-border-strong transition-all duration-200"
     >
       <div className="p-5">
         <div className="flex items-start justify-between gap-4 mb-4">
@@ -45,13 +53,16 @@ function GoalCard({ goal, expanded, onToggleExpand, onToggleMilestone }: {
             <div className="min-w-0">
               <h3 className="text-[15px] font-semibold text-text leading-snug">{goal.title}</h3>
               {goal.description && (
-                <p className="text-xs text-text-secondary mt-1 leading-relaxed line-clamp-2">
-                  {goal.description}
-                </p>
+                <p className="text-xs text-text-secondary mt-1 leading-relaxed line-clamp-2">{goal.description}</p>
               )}
             </div>
           </div>
-          <Badge className={cn("shrink-0 font-mono tabular-nums text-[11px]", isComplete ? "bg-success text-white" : "bg-border-light text-text-secondary")}>
+          <Badge
+            className={cn(
+              "shrink-0 font-mono tabular-nums text-[11px]",
+              isComplete ? "bg-success text-white" : "bg-border-light text-text-secondary"
+            )}
+          >
             {pct}%
           </Badge>
         </div>
@@ -76,12 +87,16 @@ function GoalCard({ goal, expanded, onToggleExpand, onToggleMilestone }: {
 
         <button
           onClick={onToggleExpand}
-          className="flex items-center gap-1 mt-4 text-xs font-medium text-primary hover:text-accent transition-colors"
+          className="flex items-center gap-1 mt-4 text-xs font-medium text-primary hover:text-accent transition-colors cursor-pointer"
         >
           {expanded ? (
-            <><ChevronUp className="h-3.5 w-3.5" /> Hide milestones</>
+            <>
+              <ChevronUp className="h-3.5 w-3.5" /> Hide milestones
+            </>
           ) : (
-            <><ChevronDown className="h-3.5 w-3.5" /> View milestones</>
+            <>
+              <ChevronDown className="h-3.5 w-3.5" /> View milestones
+            </>
           )}
           <span className="text-text-muted text-[10px] ml-1">({total})</span>
         </button>
@@ -93,7 +108,7 @@ function GoalCard({ goal, expanded, onToggleExpand, onToggleMilestone }: {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
             className="overflow-hidden"
           >
             <Separator />
@@ -103,14 +118,19 @@ function GoalCard({ goal, expanded, onToggleExpand, onToggleMilestone }: {
                   key={i}
                   whileTap={{ scale: 0.99 }}
                   onClick={() => onToggleMilestone(i)}
-                  className="flex items-start gap-3 w-full py-2.5 group"
+                  className="flex items-start gap-3 w-full py-2.5 group cursor-pointer"
                 >
                   {m.done ? (
                     <CheckCircle2 className="h-[18px] w-[18px] text-success shrink-0 mt-0.5" />
                   ) : (
                     <Circle className="h-[18px] w-[18px] text-text-muted group-hover:text-primary shrink-0 mt-0.5 transition-colors" />
                   )}
-                  <span className={cn("text-[13px] leading-relaxed transition-all", m.done ? "text-text-muted line-through" : "text-text")}>
+                  <span
+                    className={cn(
+                      "text-[13px] leading-relaxed transition-all",
+                      m.done ? "text-text-muted line-through" : "text-text"
+                    )}
+                  >
                     {m.title}
                   </span>
                 </motion.button>
@@ -144,9 +164,7 @@ export function GoalsView({ goals, onToggleMilestone, loading = false }: GoalsVi
     <div className="h-full flex flex-col">
       <header className="px-6 lg:px-8 py-5 border-b border-border bg-surface/70 backdrop-blur-md shrink-0">
         <h2 className="display-font text-xl text-text leading-none">Your Goals</h2>
-        <p className="text-[13px] text-text-secondary mt-1">
-          Long-term objectives, one milestone at a time
-        </p>
+        <p className="text-[13px] text-text-secondary mt-1">Long-term objectives, one milestone at a time</p>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 lg:p-6">

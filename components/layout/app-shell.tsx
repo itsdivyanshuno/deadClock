@@ -14,6 +14,7 @@ interface AppShellProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
   loading: boolean;
+  streakData?: { current: number; longest: number; totalCompletions: number; achievements: Array<{ id?: string; title: string; icon?: string }> } | null;
   children: React.ReactNode;
 }
 
@@ -22,6 +23,9 @@ const VIEW_TITLES: Record<View, string> = {
   tasks: "Tasks",
   goals: "Goals",
   dashboard: "Dashboard",
+  analytics: "Analytics",
+  heatmap: "Activity",
+  reflection: "Reflection",
   settings: "Settings",
 };
 
@@ -33,6 +37,7 @@ export function AppShell({
   darkMode,
   onToggleDarkMode,
   loading,
+  streakData,
   children,
 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -72,6 +77,7 @@ export function AppShell({
               goals={goals as any}
               darkMode={darkMode}
               onToggleDarkMode={onToggleDarkMode}
+      streakData={streakData}
             />
             <button
               onClick={() => setSidebarOpen(false)}
@@ -96,6 +102,7 @@ export function AppShell({
             goals={goals as any}
             darkMode={darkMode}
             onToggleDarkMode={onToggleDarkMode}
+      streakData={streakData}
           />
         )}
       </div>
@@ -134,11 +141,13 @@ export function AppShell({
           <AnimatePresence mode="wait">
             <motion.div
               key={view}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.2 }}
-              className="h-full"
+          initial={{ opacity: 0, y: 10, scale: 0.998 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -6, scale: 0.998 }}
+          transition={{
+            duration: 0.35,
+            ease: [0.25, 0.1, 0.25, 1],
+          }}
             >
               {children}
             </motion.div>

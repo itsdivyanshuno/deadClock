@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Send, Copy, Check } from "lucide-react";
+import { Send, Copy, Check, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Task, Goal } from "@/lib/agent";
 
@@ -12,17 +12,39 @@ interface ChatViewProps {
   messages: Message[];
   input: string;
   loading: boolean;
+  toolActive?: boolean;
   onInputChange: (v: string) => void;
   onSend: () => void;
   onQuickStart: (msg: string) => void;
 }
 
-const QUICK_STARTS = [
-  { icon: "📚", label: "Study for midterms", msg: "I have my midterm exams next week. Help me create a study plan." },
-  { icon: "💼", label: "Work tasks", msg: "I need to prepare a project presentation by Friday and send 3 reports." },
-  { icon: "🎯", label: "Set a goal", msg: "I want to build a fitness habit — help me set milestones." },
-  { icon: "⚡", label: "Prioritise my day", msg: "I have 5 tasks due today, help me figure out what to do first." },
-];
+
+function ToolExecutionIndicator() {
+ const messages = [
+  { emoji: "📋", text: "Organising your tasks…" },
+  { emoji: "🎯", text: "Setting up your goals…" },
+  { emoji: "📅", text: "Building your schedule…" },
+  { emoji: "💡", text: "Thinking of suggestions…" },
+ ];
+ const [idx, setIdx] = useState(0);
+ useEffect(() => {
+  if (messages.length <= 1) return;
+  const t = setInterval(() => setIdx((p) => (p + 1) % messages.length), 2200);
+  return () => clearInterval(t);
+ }, []);
+ const { emoji, text } = messages[idx];
+
+ return (
+  <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
+   <div className="max-w-[80%] px-4 py-3 rounded-2xl rounded-bl-sm bg-accent/10 border border-accent/20">
+    <div className="flex items-center gap-2">
+     <span className="text-sm">{emoji}</span>
+     <p className="text-xs font-medium text-accent">{text}</p>
+    </div>
+   </div>
+  </motion.div>
+ );
+}
 
 function TypingIndicator() {
   return (
@@ -68,7 +90,7 @@ function SingleMessage({ message }: { message: Message }) {
             ) : (
               <button
                 onClick={() => { navigator.clipboard.writeText(message.content); setCopied(true); }}
-                className="text-text-muted hover:text-text-secondary bg-surface/90 border border-border rounded-md p-1"
+                className="text-text-muted hover:text-text-secondary bg-surface/90 border border-border rounded-md p-1 cursor-pointer"
                 aria-label="Copy message"
               >
                 <Copy className="h-3 w-3" />
@@ -100,7 +122,7 @@ function GreetingState({ onQuickStart }: { onQuickStart: (msg: string) => void }
 
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="flex flex-col items-center justify-center h-full px-6">
-      <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.1 }} className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-text flex items-center justify-center shadow-lg mb-6">
+      <motion.div initial={{ scale: 0.85, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.15, type: "spring", stiffness: 200, damping: 15 }} className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary via-primary to-text flex items-center justify-center shadow-lg mb-6">
         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" />
         </svg>
@@ -119,7 +141,7 @@ function GreetingState({ onQuickStart }: { onQuickStart: (msg: string) => void }
             whileHover={{ y: -1, scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onQuickStart(s.msg)}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-surface text-left text-sm font-medium text-text-secondary hover:border-primary/40 hover:text-text hover:shadow-sm transition-all"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-border bg-surface text-left text-sm font-medium text-text-secondary hover:border-primary/40 hover:text-text hover:shadow-sm hover:border-border transition-all cursor-pointer"
           >
             <span className="text-base">{s.icon}</span>
             <span>{s.label}</span>
@@ -134,7 +156,7 @@ function GreetingState({ onQuickStart }: { onQuickStart: (msg: string) => void }
 /*  Main Chat View                                                   */
 /* ------------------------------------------------------------------ */
 
-export function ChatView({ messages, input, loading, onInputChange, onSend, onQuickStart }: ChatViewProps) {
+export function ChatView({ messages, input, loading, toolActive, onInputChange, onSend, onQuickStart }: ChatViewProps) {
   const endRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [textareaRows, setTextareaRows] = useState(1);
@@ -167,14 +189,15 @@ export function ChatView({ messages, input, loading, onInputChange, onSend, onQu
             {messages.map((m, i) => (
               <SingleMessage key={i} message={m} />
             ))}
-            {loading && <TypingIndicator />}
+            {toolActive && <ToolExecutionIndicator />}
+       {loading && !toolActive && <TypingIndicator />}
             <div ref={endRef} />
           </div>
         )}
       </div>
       <div className="shrink-0 px-4 pb-5 pt-2 lg:px-6">
         <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-          <div className="group flex items-end gap-2 bg-surface border border-border rounded-2xl px-4 py-2.5 shadow-sm focus-within:border-primary/40 focus-within:shadow-md transition-all duration-200">
+          <div className="group flex items-end gap-2 bg-surface border border-border rounded-2xl px-4 py-2.5 shadow-sm focus-within:border-primary/50 focus-within:shadow-lg focus-within:ring-2 focus-within:ring-primary/10 transition-all duration-200">
             <textarea
               rows={textareaRows}
               value={input}
@@ -184,13 +207,18 @@ export function ChatView({ messages, input, loading, onInputChange, onSend, onQu
               }}
               placeholder="Describe what you need to accomplish..."
               disabled={loading}
-              className={cn("flex-1 resize-none bg-transparent border-none outline-none text-sm leading-relaxed placeholder:text-text-muted py-1 max-h-32 disabled:opacity-50")}
+              className={cn("flex-1 resize-none bg-transparent border-none outline-none text-sm leading-relaxed placeholder:text-text-muted py-1 max-h-32 overflow-y-auto disabled:opacity-50")}
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
               aria-label="Send message"
-              className={cn("shrink-0 h-9 w-9 rounded-xl flex items-center justify-center transition-all duration-200 bg-primary text-white hover:bg-text disabled:opacity-30 disabled:cursor-not-allowed", input.trim() && !loading && "shadow-sm shadow-primary/20")}
+              className={cn(
+        "shrink-0 h-9 w-9 rounded-xl flex items-center justify-center transition-all duration-200 bg-primary text-white disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer",
+        input.trim() && !loading
+          ? "shadow-md shadow-primary/25 hover:-translate-y-0.5 hover:scale-105 hover:shadow-lg hover:shadow-accent/30 hover:bg-accent"
+          : "",
+      )}
             >
               <Send className="h-4 w-4" strokeWidth={2} />
             </button>

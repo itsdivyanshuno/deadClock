@@ -2,13 +2,15 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, Clock, Trash2, ListChecks, CheckCircle2, Circle } from "lucide-react";
+import { Calendar, Clock, Trash2, ListChecks, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { isOverdue, PRIORITY_ORDER, formatDeadline } from "@/lib/helpers";
 import type { Task } from "@/lib/agent";
 import { PriorityBadge, CategoryIcon } from "@/components/shared/priority-badge";
 import { TaskCardSkeleton } from "@/components/shared/loading-skeleton";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 
 type Filter = "all" | "pending" | "completed";
 
@@ -16,50 +18,52 @@ interface TasksViewProps {
   tasks: Task[];
   onToggleTask: (id: string) => void;
   onDeleteTask: (id: string) => void;
+  onQuickAdd?: () => void;
   loading?: boolean;
 }
 
-const ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 };
+
 
 function taskSort(a: Task, b: Task) {
   if (a.status === "completed" && b.status !== "completed") return 1;
   if (a.status !== "completed" && b.status === "completed") return -1;
-  return (ORDER[a.priority] ?? 2) - (ORDER[b.priority] ?? 2);
+  return (PRIORITY_ORDER[a.priority] ?? 2) - (PRIORITY_ORDER[b.priority] ?? 2);
 }
 
-function isOverdue(deadline: string) {
-  return new Date(deadline) < new Date();
-}
 
 function SingleTask({ task, onToggle, onDelete }: { task: Task; onToggle: () => void; onDelete: () => void }) {
   const overdue = isOverdue(task.deadline) && task.status !== "completed";
+  const isDone = task.status === "completed";
 
   return (
     <motion.div
       layout
+      whileHover={{ y: -1, transition: { duration: 0.15 } }}
+      whileTap={{ scale: 0.995 }}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.96 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className={cn(
         "group relative rounded-xl border p-4 transition-all duration-200",
-        task.status === "completed"
+        isDone
           ? "bg-surface/40 border-border/50 opacity-60"
-          : "bg-surface border-border hover:border-border-strong hover:shadow-sm"
+          : "bg-surface border-border hover:border-border-strong hover:-translate-y-0.5 hover:shadow-md hover:shadow-border/25 hover:border-border-strong"
       )}
     >
       <div className="flex items-start gap-3.5">
         <button
           onClick={onToggle}
-          aria-label={task.status === "completed" ? "Reopen task" : "Complete task"}
-          title={task.status === "completed" ? "Reopen" : "Complete"}
+          aria-label={isDone ? "Reopen task" : "Complete task"}
+          title={isDone ? "Reopen" : "Complete"}
           className={cn(
-            "mt-0.5 shrink-0 h-[22px] w-[22px] rounded-md border-2 flex items-center justify-center transition-all duration-200",
-            task.status === "completed"
+            "mt-0.5 shrink-0 h-[22px] w-[22px] rounded-md border-2 flex items-center justify-center transition-all duration-200 cursor-pointer",
+            isDone
               ? "bg-gradient-to-br from-success to-emerald-500 border-transparent"
               : "border-border hover:border-primary hover:bg-primary-soft"
           )}
         >
-          {task.status === "completed" && (
+          {isDone && (
             <motion.span initial={{ scale: 0 }} animate={{ scale: 1 }} className="text-white text-[11px]">
               ✓
             </motion.span>
@@ -68,29 +72,32 @@ function SingleTask({ task, onToggle, onDelete }: { task: Task; onToggle: () => 
 
         <div className="flex-1 min-w-0 space-y-2.5">
           <div className="flex items-start justify-between gap-3">
-            <p className={cn("text-[13px] leading-snug", task.status === "completed" ? "text-text-muted line-through" : "text-text font-medium")}>
-              <span className="mr-1">{CategoryIcon({ category: task.category })}</span>
+            <p className={cn("text-[13px] leading-snug", isDone ? "text-text-muted line-through" : "text-text font-medium")}>
+              <CategoryIcon category={task.category} />
               {task.title}
             </p>
             <button
               onClick={onDelete}
               aria-label="Delete task"
               title="Delete"
-              className="opacity-0 group-hover:opacity-100 shrink-0 h-7 w-7 rounded-md flex items-center justify-center text-text-muted hover:text-danger hover:bg-danger-soft transition-all"
+              className="opacity-0 group-hover:opacity-100 shrink-0 h-7 w-7 rounded-md flex items-center justify-center text-text-muted hover:text-danger hover:bg-danger-soft transition-all cursor-pointer"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
           </div>
 
           {task.description && (
-            <p className="text-xs text-text-secondary leading-relaxed line-clamp-2">
-              {task.description}
-            </p>
+            <p className="text-xs text-text-secondary leading-relaxed line-clamp-2">{task.description}</p>
           )}
 
           <div className="flex flex-wrap items-center gap-2">
             <PriorityBadge priority={task.priority} />
-            <span className={cn("inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full", overdue ? "bg-danger-soft text-danger font-medium" : "bg-border-light text-text-muted")}>
+            <span
+              className={cn(
+                "inline-flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full",
+                overdue ? "bg-danger-soft text-danger font-medium" : "bg-border-light text-text-muted"
+              )}
+            >
               <Calendar className="h-3 w-3" />
               {new Date(task.deadline).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
             </span>
@@ -118,20 +125,20 @@ function SingleTask({ task, onToggle, onDelete }: { task: Task; onToggle: () => 
   );
 }
 
-export function TasksView({ tasks, onToggleTask, onDeleteTask, loading = false }: TasksViewProps) {
+export function TasksView({ tasks, onToggleTask, onDeleteTask, onQuickAdd, loading = false }: TasksViewProps) {
   const [filter, setFilter] = useState<Filter>("all");
 
   const filtered = useMemo(
-    () => tasks.filter((t) => {
-      if (filter === "pending") return t.status !== "completed";
-      if (filter === "completed") return t.status === "completed";
-      return true;
-    }),
+    () =>
+      tasks.filter((t) => {
+        if (filter === "pending") return t.status !== "completed";
+        if (filter === "completed") return t.status === "completed";
+        return true;
+      }),
     [tasks, filter]
   );
 
   const sorted = useMemo(() => [...filtered].sort(taskSort), [filtered]);
-
   const pendingCount = tasks.filter((t) => t.status !== "completed").length;
   const completedCount = tasks.filter((t) => t.status === "completed").length;
 
@@ -145,6 +152,11 @@ export function TasksView({ tasks, onToggleTask, onDeleteTask, loading = false }
               {pendingCount} pending · {completedCount} completed
             </p>
           </div>
+          {onQuickAdd && (
+            <Button size="sm" onClick={onQuickAdd} className="h-8 gap-1.5 text-xs">
+              <Plus className="h-3.5 w-3.5" /> New task
+            </Button>
+          )}
         </div>
         <Tabs value={filter} onValueChange={(v) => setFilter(v as Filter)}>
           <TabsList className="h-9">
@@ -166,12 +178,12 @@ export function TasksView({ tasks, onToggleTask, onDeleteTask, loading = false }
               filter === "completed"
                 ? "No completed tasks yet. Finish one to see it here."
                 : filter === "pending"
-                ? "No pending tasks. You're all caught up!"
-                : "Chat with the AI to create your first task."
+                  ? "No pending tasks. You're all caught up!"
+                  : "Chat with the AI to create your first task."
             }
           />
         ) : (
-          <div className="space-y-2.5">
+          <div className="space-y-2.5 max-w-3xl mx-auto">
             <AnimatePresence mode="popLayout">
               {sorted.map((t) => (
                 <SingleTask key={t.id} task={t} onToggle={() => onToggleTask(t.id)} onDelete={() => onDeleteTask(t.id)} />

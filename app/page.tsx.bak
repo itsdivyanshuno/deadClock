@@ -3,15 +3,17 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Task, Goal } from "@/lib/agent";
 type Message = { role: "user" | "assistant"; content: string };
+interface ChatResponse extends Message { toolCalled?: boolean }
 import { AppShell } from "@/components/layout/app-shell";
 import { ChatView } from "@/components/chat/chat-view";
 import { TasksView } from "@/components/tasks/tasks-view";
 import { GoalsView } from "@/components/goals/goals-view";
 import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
-import { AnalyticsView } from "@/components/views/analytics-view";
+import AnalyticsView from "@/components/views/analytics-view";
 import { HeatmapView } from "@/components/views/heatmap-view";
 import { SettingsView } from "@/components/settings/settings-view";
-import { ReflectionView } from "@/components/views/reflection-view";
+import { StreakDisplay } from "@/components/analytics/streak-display";
+import ReflectionView from "@/components/views/reflection-view";
 import { CommandPalette, useCommandPalette } from "@/components/shared/command-palette";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -27,40 +29,9 @@ export default function Home() {
   const [hydrated, setHydrated] = useState(false);
   const [view, setView] = useState<View>("chat");
   const [darkMode, setDarkMode] = useState(false);
-  const [streakData, setStreakData] = useState<{
-    current: number;
-    longest: number;
-    totalCompletions: number;
-    achievements: Array<{ id?: string; title: string; icon?: string }>;
-  } | null>(null);
-  const [dailyLogs, setDailyLogs] = useState<
-    Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
-  >([]);
-const [heatmapData, setHeatmapData] = useState<
-Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
->([]);
+  const [streakData, setStreakData] = useState<{ current: number; longest: number; totalCompletions: number; achievements: Array<{ id?: string; title: string; icon?: string }> } | null>(null);
 
   const commandPalette = useCommandPalette(setView);
-
-  /* Hydrate dark mode from localStorage before paint */
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("deadclock-dark");
-      if (saved !== null) {
-        const parsed = JSON.parse(saved);
-        setDarkMode(parsed);
-        if (parsed) document.documentElement.classList.add("dark");
-      }
-    } catch { /* ignore */ }
-  }, []);
-
-  /* Apply + persist dark mode */
-  useEffect(() => {
-    const root = document.documentElement;
-    if (darkMode) root.classList.add("dark");
-    else root.classList.remove("dark");
-    try { localStorage.setItem("deadclock-dark", JSON.stringify(darkMode)); } catch { /* ignore */ }
-  }, [darkMode]);
 
   /* ── Hydrate from DB on first mount ─────────────────────────── */
   useEffect(() => {
@@ -74,34 +45,31 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
           if (data.toolCalled) setToolActive(true);
           if (data.messages && data.messages.length > 0) setMessages(data.messages);
         }
-        const analyticsRes = await fetch("/api/analytics");
-        if (analyticsRes.ok) {
-          const snapshot = await analyticsRes.json();
-          setStreakData({
-            current: snapshot.streaks.current ?? 0,
-            longest: snapshot.streaks.longest ?? 0,
-            totalCompletions: snapshot.streaks.totalCompletions ?? 0,
-            achievements: (snapshot.achievements ?? []).map(
-              (a: Record<string, unknown>) => ({
-                id: (a.id as string | undefined) ?? undefined,
-                title: a.title as string,
-                icon: (a.icon as string | undefined) ?? undefined,
-              })
-            ),
-          });
-          setDailyLogs(snapshot.dailyLogs ?? []);
-          setHeatmapData(
-    (snapshot.heatmap ?? []).map((h: { date: string; count: number }) => ({
-      date: h.date,
-      tasksCompleted: h.count,
-      focusMinutes: 0,
-    }))
-  );
-        }
-      } catch { /* silent */ }
-      setHydrated(true);
+  const analyticsRes = await fetch("/api/analytics");
+  if (analyticsRes.ok) {
+    const snapshot = await analyticsRes.json();
+    setStreakData({
+      current: snapshot.streaks.current ?? 0,
+      longest: snapshot.streaks.longest ?? 0,
+      totalCompletions: snapshot.streaks.totalCompletions ?? 0,
+      achievements: (snapshot.achievements ?? []).map((a: Record<string, unknown>) => ({
+        id: (a.id as string | undefined) ?? undefined,
+        title: a.title as string,
+        icon: (a.icon as string | undefined) ?? undefined,
+      })),
+    });
+  }
+ } catch { /* silent */ }
+ setHydrated(true);
     })();
   }, []);
+
+  /* ── Persist dark mode preference ───────────────────────────── */
+  useEffect(() => {
+    const root = document.documentElement;
+    if (darkMode) root.classList.add("dark");
+    else root.classList.remove("dark");
+  }, [darkMode]);
 
   /* ── Chat handlers ─────────────────────────────────────────── */
   const handleSend = useCallback(async () => {
@@ -123,19 +91,13 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
         if (data.goals) setGoals(data.goals);
         if (data.toolCalled) setToolActive(true);
       } else {
-        setMessages((p) => [
-          ...p,
-          {
-            role: "assistant",
-            content: "Something went wrong. Check if your API key is set.",
-          },
-        ]);
+        setMessages((p) => [...p, {
+          role: "assistant",
+          content: "Something went wrong. Check if your API key is set.",
+        }]);
       }
     } catch {
-      setMessages((p) => [
-        ...p,
-        { role: "assistant", content: "Error connecting to AI. Please try again." },
-      ]);
+      setMessages((p) => [...p, { role: "assistant", content: "Error connecting to AI. Please try again." }]);
     }
     setLoading(false);
   }, [input, loading]);
@@ -151,7 +113,7 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
       const task = tasks.find((t) => t.id === id);
       const completing = task?.status !== "completed";
       setTasks((p) =>
-        p.map((t) => (t.id === id ? { ...t, status: completing ? "completed" : "pending" } : t))
+        p.map((t) => t.id === id ? { ...t, status: completing ? "completed" : "pending" } : t)
       );
       try {
         await fetch("/api/chat", {
@@ -159,13 +121,13 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: completing ? `complete task ${id}` : `reopen task ${id}` }),
         });
-        if (completing && task) {
-          fetch("/api/complete", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ task }),
-          }).catch(() => {});
-        }
+  if (completing && task) {
+    fetch("/api/complete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ task }),
+    }).catch(() => {});
+  }
       } catch { /* best-effort */ }
     },
     [tasks]
@@ -190,12 +152,7 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
       setGoals((p) =>
         p.map((g) =>
           g.id === goalId
-            ? {
-                ...g,
-                milestones: g.milestones.map((m, i) =>
-                  i === idx ? { ...m, done: !m.done } : m
-                ),
-              }
+            ? { ...g, milestones: g.milestones.map((m, i) => i === idx ? { ...m, done: !m.done } : m) }
             : g
         )
       );
@@ -233,7 +190,7 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
         darkMode={darkMode}
         onToggleDarkMode={() => setDarkMode((d) => !d)}
         loading={!hydrated}
-        streakData={streakData}
+  streakData={streakData}
       >
         {view === "chat" && (
           <ChatView
@@ -262,53 +219,31 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
           />
         )}
         {view === "dashboard" && (
-          <DashboardOverview
-            tasks={tasks}
-            goals={goals}
-            streakData={streakData}
-            loading={!hydrated}
-          />
+          <DashboardOverview tasks={tasks} goals={goals} streakData={streakData} loading={!hydrated} />
         )}
-        {view === "analytics" && (
-          <AnalyticsView
-            dailyLogs={dailyLogs}
-            streakData={streakData}
-            tasks={tasks}
-          />
-        )}
-        {view === "heatmap" && (
-          <HeatmapView dailyLogs={heatmapData} />
-        )}
-        {view === "reflection" && (
-          <ReflectionView
-            onSubmit={async ({
-              wentWell,
-              toImprove,
-              tomorrowFocus,
-              mood,
-            }: {
-              wentWell: string;
-              toImprove: string;
-              tomorrowFocus: string;
-              mood: string;
-            }) => {
-              try {
-                await fetch("/api/reflection", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ wentWell, toImprove, tomorrowFocus, mood }),
-                });
-              } catch { /* best-effort */ }
-            }}
-            loading={false}
-          />
-        )}
-        {view === "settings" && (
-          <SettingsView
-            darkMode={darkMode}
-            onToggleDarkMode={() => setDarkMode((d) => !d)}
-          />
-        )}
+{view === "analytics" && (
+  <AnalyticsView
+    dailyLogs={[]}
+    streakData={streakData}
+    tasks={tasks}
+  />
+)}
+{view === "heatmap" && (
+  <HeatmapView
+    dailyLogs={[]}
+  />
+)}
+{view === "reflection" && (
+  <ReflectionView
+    onSubmit={({ wentWell, toImprove, tomorrowFocus, mood }: { wentWell: string; toImprove: string; tomorrowFocus: string; mood: string }) => {
+      console.log("reflection", { wentWell, toImprove, tomorrowFocus, mood });
+    }}
+    loading={false}
+  />
+)}
+  {view === "settings" && (
+    <SettingsView darkMode={darkMode} onToggleDarkMode={() => setDarkMode((d) => !d)} />
+  )}
       </AppShell>
     </TooltipProvider>
   );

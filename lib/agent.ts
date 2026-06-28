@@ -70,6 +70,8 @@ export interface Task {
   estimatedTime: string;
   /** Optional breakdown of this task into smaller, executable steps. */
   subtasks: string[];
+  /** ISO-8601 timestamp marking when this task was completed. */
+  completedAt?: string;
   /** ISO-8601 timestamp marking when this record was first created. */
   createdAt: string;
 }
@@ -95,7 +97,7 @@ export interface Goal {
 /**
  * A single message in the conversation transcript.
  */
-interface Message {
+export interface Message {
   role: "user" | "assistant" | "model";
   content: string;
 }
@@ -828,7 +830,7 @@ export async function chat(userMessage: string) {
   saveState(state);
 
   // Step 7: Return a structured payload for the API route to serialise.
-  return { response: fullResponse, tasks: finalTasks, goals: finalGoals };
+  return { response: fullResponse, tasks: finalTasks, goals: finalGoals, toolCalled: toolCalls.length > 0 };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -879,7 +881,7 @@ function generateId(prefix: string): string {
  */
 function formatDate(iso: string): string {
   try {
-    return new Date(iso).toLocaleDateString("en-IN", {
+    return new Date(iso).toLocaleDateString("en-US", {
       day: "numeric",
       month: "short",
       year: "numeric",

@@ -12,20 +12,24 @@ import {
   Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
+  TrendingUp,
+  BarChart3,
+  Moon,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, tier3Hover } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
 import { PriorityBadge } from "@/components/shared/priority-badge";
+import { StreakDisplay } from "@/components/analytics/streak-display";
 import type { Task, Goal } from "@/lib/agent";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                             */
 /* ------------------------------------------------------------------ */
 
-export type View = "chat" | "tasks" | "goals" | "dashboard" | "settings";
+export type View = "chat" | "tasks" | "goals" | "dashboard" | "analytics" | "heatmap" | "reflection" | "settings";
 
 interface SidebarProps {
   view: View;
@@ -36,6 +40,7 @@ interface SidebarProps {
   onToggleDarkMode: () => void;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  streakData?: { current: number; longest: number; totalCompletions: number; achievements: Array<{ id?: string; title: string; icon?: string }> } | null;
 }
 
 interface NavItem {
@@ -49,6 +54,9 @@ const MAIN_NAV: NavItem[] = [
   { id: "chat", label: "Chat", icon: MessageSquare },
   { id: "tasks", label: "Tasks", icon: CheckSquare },
   { id: "goals", label: "Goals", icon: Target },
+  { id: "analytics", label: "Analytics", icon: BarChart3 },
+  { id: "heatmap", label: "Activity", icon: TrendingUp },
+  { id: "reflection", label: "Reflect", icon: Moon },
 ];
 
 const FOOTER_NAV: NavItem[] = [
@@ -78,11 +86,11 @@ function NavButton({
       aria-label={tooltipLabel || item.label}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium",
+        "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium cursor-pointer",
         "transition-all duration-200",
         active
           ? "bg-primary/10 text-primary"
-          : "text-text-muted hover:bg-border-light hover:text-text-secondary"
+          : "text-text-muted " + tier3Hover
       )}
     >
       <item.icon
@@ -114,22 +122,6 @@ function NavButton({
   return content;
 }
 
-function TaskPillRow({ task }: { task: Task }) {
-  return (
-    <div className="flex items-center gap-2 py-1 px-3 rounded-lg hover:bg-border-light transition-colors cursor-pointer group">
-      <div className="flex-1 min-w-0">
-        <p className="text-[12px] font-medium text-text truncate">{task.title}</p>
-        <p className="text-[10px] text-text-muted mt-0.5">
-          {new Date(task.deadline).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })}
-        </p>
-      </div>
-      <PriorityBadge priority={task.priority} />
-    </div>
-  );
-}
 
 function TaskMiniItem({ task }: { task: Task }) {
   return (
@@ -158,6 +150,7 @@ export function Sidebar({
   onToggleDarkMode,
   collapsed = false,
   onToggleCollapse,
+  streakData,
 }: SidebarProps) {
   const [goalsExpanded, setGoalsExpanded] = useState(true);
   const [tasksSidebarExpanded, setTasksSidebarExpanded] = useState(true);
@@ -243,7 +236,7 @@ export function Sidebar({
 
       {/* ── Scrollable content ─────────────────────────────────────── */}
       {!collapsed && (
-        <ScrollArea className="flex-1 px-3">
+        <ScrollArea className="flex-1 overflow-hidden px-3">
           <div className="space-y-4 pb-2">
             {/* Goals overview */}
             <AnimatePresence>
@@ -366,6 +359,12 @@ export function Sidebar({
                 </div>
               </div>
             )}
+            {/* Streak widget */}
+            {streakData && !collapsed && (
+            <div className="px-3 mt-3">
+              <StreakDisplay data={streakData} />
+            </div>
+          )}
           </div>
         </ScrollArea>
       )}
@@ -373,7 +372,7 @@ export function Sidebar({
       {/* Collapsed nav icons */}
       {collapsed && (
         <div className="flex flex-col items-center gap-1 py-3">
-          {MAIN_NAV.slice(0, 3).map((item) => (
+          {MAIN_NAV.map((item) => (
             <NavButton
               key={item.id}
               item={item}
