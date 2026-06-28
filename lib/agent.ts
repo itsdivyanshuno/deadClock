@@ -96,6 +96,11 @@ export interface Goal {
 
 /**
  * A single message in the conversation transcript.
+ *
+ * Internal storage uses "model" for AI turns (matching the @google/genai SDK
+ * contract). The "assistant" variant is accepted for backward compatibility
+ * with pre-existing database entries but is normalised to "model" before
+ * any call to the Gemini API.
  */
 export interface Message {
   role: "user" | "assistant" | "model";
@@ -279,21 +284,21 @@ const taskTools = [
           required: ["goalTitle", "deadline", "availableHoursPerWeek"],
         },
       },
-// ── delete_task ────────────────────────────────────────────────────
-{
-  name: "delete_task",
-  description: "Permanently delete a task from the project by id.",
-  parameters: {
-    type: "object",
-    properties: {
-      id: {
-        type: "string",
-        description: "The exact id of the task to delete."
-      }
-    },
-    required: ["id"],
-  },
-},
+      // ── delete_task ────────────────────────────────────────────────────
+      {
+        name: "delete_task",
+        description: "Permanently delete a task from the project by id.",
+        parameters: {
+          type: "object",
+          properties: {
+            id: {
+              type: "string",
+              description: "The exact id of the task to delete.",
+            }
+          },
+          required: ["id"],
+        },
+      },
       // ── reschedule_at_risk_tasks ──────────────────────────────────────────
       {
         name: "reschedule_at_risk_tasks",
@@ -609,7 +614,9 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
 
       const weeksRemaining = Math.max(
         0,
-        Math.ceil((due.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24 * 7))
+        Math.ceil(
+          (due.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24 * 7)
+        )
       );
       const totalAvailableHours = weeksRemaining * availableHoursPerWeek;
       if (totalAvailableHours <= 0) {
@@ -646,13 +653,12 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
       };
     }
 
-
-// ── delete_task ─────────────────────────────────────────────────────
-case "delete_task": {
-  const { id } = args;
-  state.tasks = state.tasks.filter((t) => t.id !== id);
-  return { success: true, message: "Task deleted." };
-}
+    // ── delete_task ─────────────────────────────────────────────────────
+    case "delete_task": {
+      const { id } = args;
+      state.tasks = state.tasks.filter((t) => t.id !== id);
+      return { success: true, message: "Task deleted." };
+    }
     // ── reschedule_at_risk_tasks ────────────────────────────────────────────
     case "reschedule_at_risk_tasks": {
       const { riskThresholdHours = 24 } = args;
@@ -713,6 +719,22 @@ case "delete_task": {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Role mapping
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * The @google/genai SDK expects "model" (not "assistant") for AI turns.
+ *
+ * Internal storage already uses "model", but Message.role still allows
+ * "assistant" for backward compatibility with pre-existing DB rows.
+ * Normalise here before any API call.
+ */
+const ROLE_MAP: Record<string, string> = { user: "user", assistant: "model", model: "model" };
+function toGeminiRole(role: string): string {
+  return ROLE_MAP[role] ?? "user";
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Public orchestration function
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -756,7 +778,7 @@ export async function chat(userMessage: string) {
   const messages = [
     { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
     ...state.chatHistory.map((m) => ({
-      role: m.role,
+      role: toGeminiRole(m.role),
       parts: [{ text: m.content }],
     })),
   ];
@@ -834,7 +856,7 @@ export async function chat(userMessage: string) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper exports & utilities
+// Public helper exports
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -858,27 +880,12 @@ export function getStore() {
 // Private utility functions
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Generate a prefixed unique ID using the current timestamp and a random suffix.
- *
- * Format: `<prefix>_<unix-ms>_<0-9999>`
- *
- * Sufficient for a single-user local app; not cryptographically unique.
- * For a multi-user production system, switch to UUID v7 or Snowflake IDs.
- *
- * @param {string} prefix - "task" or "goal" to namespace the ID.
- * @returns {string} A unique identifier string.
- */
+/** Generate a prefixed unique ID using the current timestamp and a random suffix. */
 function generateId(prefix: string): string {
   return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
 }
 
-/**
- * Format an ISO date string into a human-friendly short form for UI display.
- *
- * @param {string} iso - ISO-8601 date string.
- * @returns {string} E.g. "12 Jun 2026"
- */
+/** Format an ISO date string into a human-friendly short form for UI display. */
 function formatDate(iso: string): string {
   try {
     return new Date(iso).toLocaleDateString("en-US", {
@@ -891,12 +898,7 @@ function formatDate(iso: string): string {
   }
 }
 
-/**
- * Parse a human-readable time estimate (e.g. "2 hours", "30 mins") into a number.
- *
- * @param {string} timeStr - Free-form time string from the user or AI.
- * @returns {number} Hours as a positive number. Returns 1 for unparseable / zero / negative inputs.
- */
+/** Parse a human-readable time estimate (e.g. "2 hours", "30 mins") into a number. */
 function parseTimeEstimate(timeStr: string): number {
   const lower = timeStr.toLowerCase();
 
@@ -913,13 +915,7 @@ function parseTimeEstimate(timeStr: string): number {
   return 1;
 }
 
-/**
- * Normalise an arbitrary priority string to a valid `Task["priority"]` value.
- * Falls back to `"medium"` when the input is outside the allowed set.
- *
- * @param {string} p - Raw priority value (may come from AI argument extraction).
- * @returns {"urgent" | "high" | "medium" | "low"}
- */
+/** Normalise an arbitrary priority string to a valid `Task["priority"]` value. */
 function safePriority(p: string): "urgent" | "high" | "medium" | "low" {
   const valid: Array<"urgent" | "high" | "medium" | "low"> = [
     "urgent",
@@ -949,15 +945,11 @@ function startOfWeek(date: Date): Date {
   return start;
 }
 
-/**
- * Calculate a suggested new deadline by adding a buffer to the original.
- * The buffer is `2 × riskThresholdHours` — generous enough for replanning.
- *
- * @param {string} originalDeadline - ISO deadline string of the at-risk task.
- * @param {number} riskThresholdHours - Hours currently used as the risk window.
- * @returns {string} New ISO deadline string (original + buffer).
- */
-function suggestNewDeadline(originalDeadline: string, riskThresholdHours: number): string {
+/** Calculate a suggested new deadline by adding a buffer to the original. */
+function suggestNewDeadline(
+  originalDeadline: string,
+  riskThresholdHours: number
+): string {
   const date = new Date(originalDeadline);
   const bufferMs = riskThresholdHours * 2 * 60 * 60 * 1000;
   return new Date(date.getTime() + bufferMs).toISOString();

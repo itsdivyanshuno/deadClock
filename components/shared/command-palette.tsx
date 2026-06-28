@@ -14,15 +14,7 @@ import {
   Settings2,
 } from "lucide-react";
 
-type View =
-  | "chat"
-  | "tasks"
-  | "goals"
-  | "dashboard"
-  | "analytics"
-  | "heatmap"
-  | "reflection"
-  | "settings";
+import { type View } from "@/lib/types";
 
 /* ── Palette keyboard hook (Cmd/Ctrl+K, Esc) ───────────────────────────── */
 

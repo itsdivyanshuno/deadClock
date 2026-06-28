@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X, Sparkles, Clock } from "lucide-react";
-import { View, Sidebar } from "@/components/layout/sidebar";
+import { Menu, X, Sparkles, Flame, Zap, PanelLeftOpen } from "lucide-react";
+import { Sidebar } from "@/components/layout/sidebar";
+import { type View } from "@/lib/types";
 import { SidebarSkeleton } from "@/components/shared/loading-skeleton";
+import { Progress } from "@/components/ui/progress";
 
 interface AppShellProps {
   view: View;
@@ -14,12 +16,19 @@ interface AppShellProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
   loading: boolean;
-  streakData?: { current: number; longest: number; totalCompletions: number; achievements: Array<{ id?: string; title: string; icon?: string }> } | null;
+  streakData?:
+    | {
+        current: number;
+        longest: number;
+        totalCompletions: number;
+        achievements: Array<{ id?: string; title: string; icon?: string }>;
+      }
+    | null;
   children: React.ReactNode;
 }
 
 const VIEW_TITLES: Record<View, string> = {
-  chat: "deadClock",
+  chat: "Chat",
   tasks: "Tasks",
   goals: "Goals",
   dashboard: "Dashboard",
@@ -41,6 +50,17 @@ export function AppShell({
   children,
 }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Derive compact metrics from prop data
+  const pendingCount = (tasks as Array<{ status: string }>).filter(
+    (t) => t.status !== "completed"
+  ).length;
+  const completedCount = (tasks as Array<{ status: string }>).filter(
+    (t) => t.status === "completed"
+  ).length;
+  const total = tasks.length || 1;
+  const completionRate = Math.round((completedCount / total) * 100);
 
   return (
     <div className="flex h-screen overflow-hidden bg-bg">
@@ -69,15 +89,12 @@ export function AppShell({
           >
             <Sidebar
               view={view}
-              onViewChange={(v) => {
+              onViewChange={(v: View) => {
                 onViewChange(v);
                 setSidebarOpen(false);
               }}
-              tasks={tasks as any}
-              goals={goals as any}
               darkMode={darkMode}
               onToggleDarkMode={onToggleDarkMode}
-      streakData={streakData}
             />
             <button
               onClick={() => setSidebarOpen(false)}
@@ -98,56 +115,86 @@ export function AppShell({
           <Sidebar
             view={view}
             onViewChange={onViewChange}
-            tasks={tasks as any}
-            goals={goals as any}
             darkMode={darkMode}
             onToggleDarkMode={onToggleDarkMode}
-      streakData={streakData}
+            collapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed((c: boolean) => !c)}
           />
         )}
       </div>
 
-      {/* Main */}
+      {/* Main column */}
       <main className="flex-1 flex flex-col min-w-0">
-        {/* Top bar - mobile only */}
-        <header className="lg:hidden flex items-center gap-3 h-14 px-4 border-b border-border bg-surface shrink-0">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="h-9 w-9 rounded-lg flex items-center justify-center border border-border hover:bg-border-light transition-colors"
-            aria-label="Open menu"
-          >
-            <Menu className="h-4 w-4" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-text flex items-center justify-center">
-              <Clock className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+        {/* Top navbar */}
+        <header className="h-12 flex items-center justify-between px-4 lg:px-6 border-b border-border bg-surface/70 backdrop-blur-md shrink-0">
+          {/* Left: mobile menu + page title */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden h-8 w-8 rounded-lg flex items-center justify-center border border-border hover:bg-border-light transition-colors"
+              aria-label="Open menu"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+            <h2 className="display-font text-sm text-text">{VIEW_TITLES[view]}</h2>
+          </div>
+
+          {/* Right: compact metrics */}
+          <div className="flex items-center gap-4">
+            {/* Streak pulse */}
+            {streakData && (
+              <div className="flex items-center gap-1">
+                <Flame
+                  className={`h-4 w-4 ${
+                    streakData.current >= 7
+                      ? "text-warning"
+                      : streakData.current >= 3
+                        ? "text-accent"
+                        : "text-text-muted"
+                  }`}
+                  strokeWidth={2}
+                />
+                <span className="text-xs font-bold tabular-nums text-text">
+                  {streakData.current}d
+                </span>
+              </div>
+            )}
+
+            {/* Progress bar */}
+            <div className="flex items-center gap-2 min-w-[100px]">
+              <Zap className="h-3.5 w-3.5 text-accent shrink-0" strokeWidth={2} />
+              <Progress value={completionRate} className="h-1.5 flex-1" />
+              <span className="text-[10px] font-bold tabular-nums text-text-muted w-8 text-right">
+                {completionRate}%
+              </span>
             </div>
-            <span className="display-font text-sm">dead<span className="text-accent">Clock</span></span>
-          </div>
-          <div className="ml-auto flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-accent" />
-            <span className="text-[11px] font-medium text-accent">AI</span>
+
+            {/* AI badge */}
+            <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-accent/10 text-accent">
+              <Sparkles className="h-3 w-3" />
+              <span className="text-[10px] font-semibold">AI</span>
+            </div>
+
+            {/* Collapse toggle */}
+            <button
+              onClick={() => { setSidebarCollapsed((c: boolean) => !c); }}
+              className="flex h-7 w-7 rounded-md items-center justify-center text-text-muted hover:text-text hover:bg-border-light transition-colors"
+              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <PanelLeftOpen className="h-3.5 w-3.5" />
+            </button>
           </div>
         </header>
 
-        {/* Page header */}
-        <header className="hidden lg:flex items-center justify-between h-14 px-8 border-b border-border bg-surface/70 backdrop-blur-md shrink-0">
-          <h2 className="display-font text-lg text-text">{VIEW_TITLES[view]}</h2>
-          <div className="flex items-center gap-3" />
-        </header>
-
-        {/* Content */}
+        {/* Page content */}
         <div className="flex-1 overflow-y-auto bg-texture">
           <AnimatePresence mode="wait">
             <motion.div
               key={view}
-          initial={{ opacity: 0, y: 10, scale: 0.998 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -6, scale: 0.998 }}
-          transition={{
-            duration: 0.35,
-            ease: [0.25, 0.1, 0.25, 1],
-          }}
+              initial={{ opacity: 0, y: 10, scale: 0.998 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -6, scale: 0.998 }}
+              transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
             >
               {children}
             </motion.div>

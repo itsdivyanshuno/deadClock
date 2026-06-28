@@ -1,8 +1,9 @@
 "use client";
 
+import { useMemo } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Target, TrendingUp } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { Flame, Trophy, CheckCircle2, ChevronUp } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DailyLog {
   date: string;
@@ -148,18 +149,16 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
         </div>
 
         <div className="flex gap-1">
-          {/* Row labels */}
+          {/* Row labels — all 7 days visible */}
           <div className="flex flex-col gap-1 mr-1 pt-0">
             {DAY_NAMES.map((day, i) => (
               <div
                 key={day}
                 className="h-2.5 w-2.5 flex items-center justify-center"
               >
-                {i % 2 === 1 && (
-                  <span className="text-[9px] text-text-muted leading-none -translate-x-0.5">
-                    {day}
-                  </span>
-                )}
+                <span className="text-[9px] text-text-muted leading-none -translate-x-0.5">
+                  {day}
+                </span>
               </div>
             ))}
           </div>
@@ -187,7 +186,8 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
                   {/* Day cells */}
                   {week.map((cell, dIdx) => (
                     <motion.div
-                      key={`${colIdx}-${dIdx}-${cell.dateStr || "gap"}`}variants={cellVariants}
+                      key={`${colIdx}-${dIdx}-${cell.dateStr || "gap"}`}
+                      variants={cellVariants}
                       className={cn(
                         "h-2.5 w-full rounded-sm",
                         cell.dateStr === "" && "bg-transparent",
@@ -232,7 +232,9 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
                               {cell.log?.tasksCompleted ?? 0} task{(cell.log?.tasksCompleted ?? 0) !== 1 ? "s" : ""} completed
                             </span>
                             <span className="text-stone-400">
-                              {cell.log ? formatMinutes(cell.log.focusMinutes) + " focused" : "No activity"}
+                              {cell.log
+                                ? formatMinutes(cell.log.focusMinutes) + " focused"
+                                : "No activity"}
                             </span>
                           </span>
                         </span>
@@ -244,13 +246,13 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
             })}
           </div>
         </div>
+      </div>
 
-        {/* Day-of-week row headers */}
-        <div className="flex gap-1 mt-1 ml-7">
-          {columns.map((_, colIdx) => (
-            <div key={`spacer-bottom-${colIdx}`} className="flex-1" />
-          ))}
-        </div>
+      {/* Day-of-week row headers */}
+      <div className="flex gap-1 mt-1 ml-7">
+        {columns.map((_, colIdx) => (
+          <div key={`spacer-bottom-${colIdx}`} className="flex-1" />
+        ))}
       </div>
 
       {/* Legend */}
@@ -271,22 +273,22 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
         className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-3"
       >
         <StatItem
-          icon={<Calendar className="h-3.5 w-3.5 text-accent" />}
+          icon={<Flame className="h-3.5 w-3.5 text-accent" />}
           label="Total Sessions"
           value={totalSessions.toString()}
         />
         <StatItem
-          icon={<Clock className="h-3.5 w-3.5 text-info" />}
+          icon={<Flame className="h-3.5 w-3.5 text-accent" />}
           label="Focus Minutes"
           value={formatMinutes(totalFocusMinutes)}
         />
         <StatItem
-          icon={<Target className="h-3.5 w-3.5 text-success" />}
+          icon={<CheckCircle2 className="h-3.5 w-3.5 text-success" />}
           label="Avg / Day"
           value={`${avgMinutesPerDay}m`}
         />
         <StatItem
-          icon={<TrendingUp className="h-3.5 w-3.5 text-warning" />}
+          icon={<Trophy className="h-3.5 w-3.5 text-warning" />}
           label="Top Day"
           value={mostProductiveDay ?? "—"}
         />
@@ -306,7 +308,8 @@ function StatItem({
 }) {
   return (
     <div className="rounded-lg border border-border-light bg-raised px-3 py-2">
-      <div className="flex items-center gap-1.5 mb-1">{icon}
+      <div className="flex items-center gap-1.5 mb-1">
+        {icon}
         <span className="text-[10px] text-text-muted uppercase tracking-wider">
           {label}
         </span>

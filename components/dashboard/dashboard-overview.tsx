@@ -237,6 +237,133 @@ function QuickActionButton({
   );
 }
 
+/* ── Dashboard widget: Goals progress ───────────────────────────────────── */
+
+function GoalsProgressWidget({
+  goals,
+  onNavigate,
+}: {
+  goals: GoalType[];
+  onNavigate?: (v: View) => void;
+}) {
+  if (goals.length === 0) return null;
+  return (
+    <Card
+      className="p-5 cursor-pointer hover:border-border-strong transition-colors"
+      onClick={() => onNavigate?.("goals")}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 rounded-md bg-primary/10 flex items-center justify-center">
+            <Target className="h-3.5 w-3.5 text-primary" />
+          </div>
+          <h3 className="display-font text-[14px] text-text font-semibold">
+            Goals progress
+          </h3>
+        </div>
+        <span className="text-[11px] text-text-muted font-medium bg-border-light px-2.5 py-1 rounded-full">
+          {goals.length} {goals.length === 1 ? "goal" : "goals"}
+        </span>
+      </div>
+      <div className="space-y-4">
+        {goals.slice(0, 5).map((g) => {
+          const done = g.milestones.filter((m) => m.done).length;
+          const pct = Math.round((done / g.milestones.length) * 100) || 0;
+          return (
+            <motion.div
+              key={g.id}
+              initial={{ opacity: 0, x: -6 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="space-y-1.5"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-[13px] font-semibold text-text truncate flex-1">
+                  {g.title}
+                </p>
+                <span className="text-[11px] text-text-muted tabular-nums ml-3 font-medium">
+                  {done}/{g.milestones.length}
+                </span>
+              </div>
+              <Progress value={pct} className="h-[6px]" />
+            </motion.div>
+          );
+        })}
+      </div>
+    </Card>
+  );
+}
+
+/* ── Dashboard widget: Active tasks ─────────────────────────────────────── */
+
+function ActiveTasksWidget({
+  tasks,
+  onNavigate,
+}: {
+  tasks: Task[];
+  onNavigate?: (v: View) => void;
+}) {
+  const pending = tasks.filter((t) => t.status !== "completed");
+  if (pending.length === 0) return null;
+  return (
+    <Card
+      className="p-5 cursor-pointer hover:border-border-strong transition-colors"
+      onClick={() => onNavigate?.("tasks")}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <div className="h-7 w-7 rounded-md bg-primary/10 flex items-center justify-center">
+          <ListChecks className="h-3.5 w-3.5 text-primary" />
+        </div>
+        <h3 className="display-font text-[14px] text-text font-semibold">
+          Active tasks
+        </h3>
+        <span className="text-[11px] text-text-muted ml-1 font-medium bg-border-light px-2 py-0.5 rounded-full">
+          {pending.length}
+        </span>
+      </div>
+      <div className="space-y-1">
+        {tasks
+          .filter((t) => t.status !== "completed")
+          .sort(sortTasks)
+          .slice(0, 8)
+          .map((t, i) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: i * 0.04 }}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent transition-all duration-200",
+                isOverdue(t.deadline)
+                  ? "bg-danger-soft/50 hover:border-danger/20"
+                  : "hover:bg-border-light/60 hover:border-border-strong/40"
+              )}
+            >
+              <PriorityBadge priority={t.priority} />
+              <div className="min-w-0 flex-1">
+                <p
+                  className={cn(
+                    "text-[12px] font-semibold truncate",
+                    isOverdue(t.deadline) && "text-danger"
+                  )}
+                >
+                  {t.title}
+                </p>
+                <p className="text-[10px] text-text-muted">
+                  Due {formatDeadline(t.deadline)}
+                </p>
+              </div>
+              {isOverdue(t.deadline) && (
+                <span className="text-[10px] font-bold text-danger shrink-0 uppercase tracking-wider">
+                  Overdue
+                </span>
+              )}
+            </motion.div>
+          ))}
+      </div>
+    </Card>
+  );
+}
+
 /* ── Main dashboard ─────────────────────────────────────────────────────── */
 
 export function DashboardOverview({
@@ -250,10 +377,12 @@ export function DashboardOverview({
     const pending = tasks.filter((t) => t.status !== "completed");
     const completed = tasks.filter((t) => t.status === "completed");
     const overdueCount = pending.filter((t) => isOverdue(t.deadline)).length;
-    const highUrgent = pending.filter((t) =>
-      ["urgent", "high"].includes(t.priority)
-    ).length;
-    const rate = tasks.length ? Math.round((completed.length / tasks.length) * 100) : 0;
+    const highUrgent = pending
+      .filter((t) => ["urgent", "high"].includes(t.priority))
+      .length;
+    const rate = tasks.length
+      ? Math.round((completed.length / tasks.length) * 100)
+      : 0;
     return {
       pending: pending.length,
       completed: completed.length,
@@ -280,10 +409,7 @@ export function DashboardOverview({
     [tasks]
   );
 
-  const insights = useMemo(
-    () => deriveInsights({ tasks, goals }),
-    [tasks, goals]
-  );
+  const insights = useMemo(() => deriveInsights({ tasks, goals }), [tasks, goals]);
 
   if (loading) {
     return (
@@ -323,7 +449,7 @@ export function DashboardOverview({
   return (
     <div className="h-full overflow-y-auto">
       <div className="p-6 lg:p-8 space-y-6 max-w-5xl">
-        {/* Header */}
+        {/* Greeting header */}
         <motion.div
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
@@ -350,7 +476,7 @@ export function DashboardOverview({
         {/* Focus today */}
         <FocusTodayCard tasks={tasks} onNavigate={onViewChange} />
 
-        {/* Stat cards */}
+        {/* Stat row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard
             icon={Zap}
@@ -537,105 +663,11 @@ export function DashboardOverview({
           </div>
         </div>
 
-        {/* Goals progress */}
-        {goals.length > 0 && (
-          <Card className="p-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="h-7 w-7 rounded-md bg-primary/10 flex items-center justify-center">
-                  <Target className="h-3.5 w-3.5 text-primary" />
-                </div>
-                <h3 className="display-font text-[14px] text-text font-semibold">
-                  Goals progress
-                </h3>
-              </div>
-              <span className="text-[11px] text-text-muted font-medium bg-border-light px-2.5 py-1 rounded-full">
-                {goals.length} {goals.length === 1 ? "goal" : "goals"}
-              </span>
-            </div>
-            <div className="space-y-4">
-              {goals.slice(0, 5).map((g) => {
-                const done = g.milestones.filter((m) => m.done).length;
-                const pct = Math.round((done / g.milestones.length) * 100) || 0;
-                return (
-                  <motion.div
-                    key={g.id}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="space-y-1.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <p className="text-[13px] font-semibold text-text truncate flex-1">
-                        {g.title}
-                      </p>
-                      <span className="text-[11px] text-text-muted tabular-nums ml-3 font-medium">
-                        {done}/{g.milestones.length}
-                      </span>
-                    </div>
-                    <Progress value={pct} className="h-[6px]" />
-                  </motion.div>
-                );
-              })}
-            </div>
-          </Card>
-        )}
+        {/* Goals progress widget — moved from sidebar */}
+        <GoalsProgressWidget goals={goals} onNavigate={onViewChange} />
 
-        {/* Active tasks overview */}
-        {stats.pending > 0 && (
-          <Card className="p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="h-7 w-7 rounded-md bg-primary/10 flex items-center justify-center">
-                <ListChecks className="h-3.5 w-3.5 text-primary" />
-              </div>
-              <h3 className="display-font text-[14px] text-text font-semibold">
-                Active tasks
-              </h3>
-              <span className="text-[11px] text-text-muted ml-1 font-medium bg-border-light px-2 py-0.5 rounded-full">
-                {stats.pending}
-              </span>
-            </div>
-            <div className="space-y-1">
-              {tasks
-                .filter((t) => t.status !== "completed")
-                .sort(sortTasks)
-                .slice(0, 8)
-                .map((t, i) => (
-                  <motion.div
-                    key={t.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: i * 0.04 }}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2.5 rounded-lg border border-transparent transition-all duration-200",
-                      isOverdue(t.deadline)
-                        ? "bg-danger-soft/50 hover:border-danger/20"
-                        : "hover:bg-border-light/60 hover:border-border-strong/40"
-                    )}
-                  >
-                    <PriorityBadge priority={t.priority} />
-                    <div className="min-w-0 flex-1">
-                      <p
-                        className={cn(
-                          "text-[12px] font-semibold truncate",
-                          isOverdue(t.deadline) && "text-danger"
-                        )}
-                      >
-                        {t.title}
-                      </p>
-                      <p className="text-[10px] text-text-muted">
-                        Due {formatDeadline(t.deadline)}
-                      </p>
-                    </div>
-                    {isOverdue(t.deadline) && (
-                      <span className="text-[10px] font-bold text-danger shrink-0 uppercase tracking-wider">
-                        Overdue
-                      </span>
-                    )}
-                  </motion.div>
-                ))}
-            </div>
-          </Card>
-        )}
+        {/* Active tasks widget — moved from sidebar */}
+        <ActiveTasksWidget tasks={tasks} onNavigate={onViewChange} />
 
         {/* Streak + achievements */}
         {streakData && (
@@ -654,7 +686,7 @@ export function DashboardOverview({
   );
 }
 
-/* ── Client-side insight derivation ────────────────────────────────────── */
+/* ── Client-side helpers ────────────────────────────────────────────────── */
 
 function getTimeOfDay(): string {
   const h = new Date().getHours();
@@ -684,5 +716,3 @@ function getBriefingInsight(tasks: Task[], goals: GoalType[]): string {
   if (active.length === 0) return "No pending tasks — you're ahead of the game.";
   return `${active.length} active task${active.length > 1 ? "s" : ""} in flight — keep the momentum going.`;
 }
-
-
