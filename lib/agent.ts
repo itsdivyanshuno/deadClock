@@ -665,12 +665,23 @@ function handleToolCall(name: string, args: any, state: TaskStore) {
         return { success: true, message: "No tasks found.", tasks: [] };
       }
       const lines = state.tasks.map((t) => {
+<<<<<<< Updated upstream
         const icon = t.status === "completed" ? "✅" : t.status === "overdue" ? "🚨" : "⬜";
         return `${icon} "${t.title}" [${t.id}] | ${t.priority} | due ${(t.deadline ?? "").slice(0, 10)} | ${t.status}`;
       });
       return {
         success: true,
         message: `Found ${state.tasks.length} task(s):\n${lines.join("\n")}`,
+=======
+        const status = t.status === "completed" ? "✅" : t.status === "overdue" ? "🚨" : "⬜";
+        return `${status} "${t.title}" [id:${t.id}] | ${t.priority} | due: ${t.deadline?.slice(0, 10) ?? "no date"} | ${t.status}`;
+      });
+      return {
+        success: true,
+        message: `Found ${state.tasks.length} task(s):
+${lines.join("
+")}`,
+>>>>>>> Stashed changes
         tasks: state.tasks.map((t) => ({ id: t.id, title: t.title, status: t.status, priority: t.priority, deadline: t.deadline })),
       };
     }
@@ -775,38 +786,43 @@ function toGeminiRole(role: string): string {
  */
 export async function chat(userMessage: string) {
   // Step 1: Load the persisted state as our starting point for this turn.
-  // `loadState` is imported from a CommonJS module (lib/db.js), so TypeScript
-  // sees its return as `any`; cast it for type safety.
-  const rawState = loadState() as { tasks: Task[]; goals: Goal[]; chatHistory: Message[] };
-  const state: TaskStore = {
-    tasks: rawState.tasks,
-    goals: rawState.goals,
-    chatHistory: [...rawState.chatHistory], // copy so we can mutate freely
-  };
+// `loadState` is imported from a CommonJS module (lib/db.js), so TypeScript
+// sees its return as `any`; cast it for type safety.
+const rawState = loadState() as { tasks: Task[]; goals: Goal[]; chatHistory: Message[] };
+const state: TaskStore = {
+  tasks: rawState.tasks,
+  goals: rawState.goals,
+  chatHistory: [...rawState.chatHistory], // copy so we can mutate freely
+};
 
-  // Step 2: Record the user's message in the working history.
-  state.chatHistory.push({ role: "user", content: userMessage });
+// Step 2: Record the user's message in the working history.
+state.chatHistory.push({ role: "user", content: userMessage });
 
-  // ── Build the messages array for Gemini ───────────────────────────────────
-  // The system prompt is delivered as a synthetic user message so that Gemini
-  // always sees it as the first context-setting turn, regardless of chat length.
-  const messages = [
-    { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
-    ...state.chatHistory.map((m) => ({
-      role: toGeminiRole(m.role),
-      parts: [{ text: m.content }],
-    })),
-  ];
+// ── Build the messages array for Gemini ───────────────────────────────────
+// The system prompt is delivered as a synthetic user message so that Gemini
+// always sees it as the first context-setting turn, regardless of chat length.
+const messages = [
+  { role: "user", parts: [{ text: SYSTEM_PROMPT }] },
+  ...state.chatHistory.map((m) => ({ role: toGeminiRole(m.role), parts: [{ text: m.content }] })),
+];
 
+let fullResponse: string;
+let finalTasks: Task[];
+let finalGoals: Goal[];
+let classified: ClassifiedError | null = null;
+
+try {
   // Step 3: Ask Gemini to generate a response (potentially with tool calls).
-  const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash",
-    config: {
-      tools: taskTools as any,
-      toolConfig: { functionCallingConfig: { mode: "AUTO" as any } },
-    },
-    contents: messages,
-  });
+  const response = await callGeminiWithRetry(() =>
+    ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      config: {
+        tools: taskTools as any,
+        toolConfig: { functionCallingConfig: { mode: "AUTO" as any } },
+      },
+      contents: messages,
+    })
+  );
 
   // Separate text parts (plain response) from function-call parts.
   const toolCalls = (response?.candidates?.[0]?.content?.parts ?? []).filter(
@@ -815,10 +831,6 @@ export async function chat(userMessage: string) {
   const textParts = (response?.candidates?.[0]?.content?.parts ?? []).filter(
     (p: any) => p.text
   );
-
-  let fullResponse: string;
-  let finalTasks: Task[];
-  let finalGoals: Goal[];
 
   // Step 4: Handle tool calls if Gemini triggered any.
   if (toolCalls.length > 0) {
@@ -830,20 +842,20 @@ export async function chat(userMessage: string) {
     for (const call of toolCalls) {
       const fc = (call as any).functionCall;
       const result = handleToolCall(fc.name, fc.args, state);
-      functionResponses.push({
-        functionResponse: { name: fc.name, response: result },
-      });
+      functionResponses.push({ functionResponse: { name: fc.name, response: result } });
     }
 
     // Ask Gemini to compose a human-readable follow-up after seeing tool results.
-    const followUp = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: [
-        ...messages,
-        { role: "model", parts: toolCalls },
-        { role: "user", parts: functionResponses },
-      ],
-    });
+    const followUp = await callGeminiWithRetry(() =>
+      ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [
+          ...messages,
+          { role: "model", parts: toolCalls },
+          { role: "user", parts: functionResponses },
+        ],
+      })
+    );
 
     const followUpText = (followUp?.candidates?.[0]?.content?.parts ?? [])
       .filter((p: any) => p.text)
@@ -865,9 +877,15 @@ export async function chat(userMessage: string) {
 
   // Step 6: Persist the mutated state (tasks, goals, chat history) to SQLite.
   saveState(state);
+} catch (error) {
+  classified = error && typeof error === "object" && "category" in error ? (error as ClassifiedError) : classifyGeminiError(error);
+  fullResponse = classified.message;
+  finalTasks = state.tasks;
+  finalGoals = state.goals;
+}
 
-  // Step 7: Return a structured payload for the API route to serialise.
-  return { response: fullResponse, tasks: finalTasks, goals: finalGoals, toolCalled: toolCalls.length > 0 };
+// Step 7: Return a structured payload for the API route to serialise.
+return { response: fullResponse, tasks: finalTasks, goals: finalGoals, toolCalled: false, error: classified ?? undefined };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -889,6 +907,101 @@ export function getStore() {
     goals: raw.goals,
     chatHistory: raw.chatHistory,
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Gemini error classification and retry
+// ─────────────────────────────────────────────────────────────────────────────
+
+type QuotaCategory =
+  | "INVALID_API_KEY"
+  | "QUOTA_EXHAUSTED"
+  | "NETWORK_FAILURE"
+  | "MODEL_UNAVAILABLE"
+  | "UNKNOWN";
+
+interface ClassifiedError {
+  category: QuotaCategory;
+  message: string;
+  retryable: boolean;
+}
+
+const RETRYABLE_CATEGORIES = new Set<QuotaCategory>(["QUOTA_EXHAUSTED", "NETWORK_FAILURE", "MODEL_UNAVAILABLE"]);
+
+function classifyGeminiError(error: unknown): ClassifiedError {
+  const raw = typeof error === "object" && error !== null && "message" in error ? String((error as Record<string, unknown>).message) : String(error);
+  const lower = raw.toLowerCase();
+
+  if (
+    lower.includes("api key not valid") ||
+    lower.includes("invalid api key") ||
+    lower.includes("api_key_invalid") ||
+    lower.includes("permission_denied")
+  ) {
+    return {
+      category: "INVALID_API_KEY",
+      message: "Invalid Gemini API key. Please check your configuration and try again.",
+      retryable: false,
+    };
+  }
+
+  if (
+    lower.includes("resource_exhausted") ||
+    lower.includes("quota") ||
+    lower.includes("rate limit") ||
+    lower.includes("429") ||
+    lower.includes("throttling")
+  ) {
+    return {
+      category: "QUOTA_EXHAUSTED",
+      message: "Gemini API quota exceeded. Please wait a few minutes and try again, or use another API key.",
+      retryable: true,
+    };
+  }
+
+  if (
+    lower.includes("network") ||
+    lower.includes("fetch failed") ||
+    lower.includes("econnreset") ||
+    lower.includes("enotfound") ||
+    lower.includes("timeout") ||
+    lower.includes("socket hang up")
+  ) {
+    return {
+      category: "NETWORK_FAILURE",
+      message: "Network error while reaching the AI service. Please check your connection and try again.",
+      retryable: true,
+    };
+  }
+
+  if (
+    lower.includes("model") && (lower.includes("not found") || lower.includes("unavailable") || lower.includes("unsupported"))
+  ) {
+    return {
+      category: "MODEL_UNAVAILABLE",
+      message: "The AI model is temporarily unavailable. Please try again in a moment.",
+      retryable: true,
+    };
+  }
+
+  return {
+    category: "UNKNOWN",
+    message: `AI request failed: ${raw}. Please try again.`,
+    retryable: true,
+  };
+}
+
+async function callGeminiWithRetry<T>(call: () => Promise<T>, retries = 1, delayMs = 2000): Promise<T> {
+  try {
+    return await call();
+  } catch (error) {
+    const classified = classifyGeminiError(error);
+    if (retries > 0 && classified.retryable) {
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+      return callGeminiWithRetry(call, retries - 1, delayMs * 2);
+    }
+    throw classified;
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
