@@ -131,7 +131,12 @@ interface TaskStore {
  * about *how* to act comes from the tool descriptions and parameter schemas,
  * which Gemini reads directly from the function declarations below.
  */
+const today = new Date();
+const TODAY_ISO = today.toISOString().slice(0, 10); // "2026-06-29"
+
 const SYSTEM_PROMPT = `You are "deadClock", an AI productivity companion. Your job is to help users plan, prioritize, and complete tasks before deadlines.
+
+Current date: ${TODAY_ISO}
 
 When a user mentions tasks, deadlines, or goals:
 1. Break large tasks into smaller subtasks
@@ -141,6 +146,8 @@ When a user mentions tasks, deadlines, or goals:
 5. Track goal progress
 
 Be proactive, concise, and actionable. Use tools to actually manage their tasks.
+
+When creating tasks, always use ISO-8601 format for deadlines (e.g. "${TODAY_ISO}T17:00:00" for today at 5pm, tomorrow = "${new Date(Date.now() + 86400000).toISOString().slice(0, 10)}T17:00:00").
 
 Available user profile hints (infer from their messages):
 - Student: study deadlines, assignments, exam prep
@@ -798,6 +805,7 @@ const messages = [
 let fullResponse: string;
 let finalTasks: Task[];
 let finalGoals: Goal[];
+let toolWasCalled = false;
 let classified: ClassifiedError | null = null;
 
 try {
@@ -823,6 +831,7 @@ try {
 
   // Step 4: Handle tool calls if Gemini triggered any.
   if (toolCalls.length > 0) {
+    toolWasCalled = true;
     // Seed the visible response with any text Gemini returned alongside the call.
     fullResponse = textParts.map((p: any) => p.text).join("") || "Let me handle that for you…";
 
@@ -874,7 +883,7 @@ try {
 }
 
 // Step 7: Return a structured payload for the API route to serialise.
-return { response: fullResponse, tasks: finalTasks, goals: finalGoals, toolCalled: false, error: classified ?? undefined };
+return { response: fullResponse, tasks: finalTasks, goals: finalGoals, toolCalled: toolWasCalled, error: classified ?? undefined };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
