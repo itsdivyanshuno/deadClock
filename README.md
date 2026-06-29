@@ -1,6 +1,6 @@
 <div align="center">
 
-# deadClock ⏰
+# deadClock
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs)
 ![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google)
@@ -100,9 +100,9 @@ graph LR
 | 📊 **Analytics** | Activity insights | Focus trend bars, category breakdown, completion rate, productive day |
 | ⌨️ **Heatmap** | GitHub-style grid | 6-week contribution grid showing daily completion activity |
 | 🎨 **Premium UX** | Buttery interactions | Framer Motion, 6-tiered hover system, collapsible sidebar |
+| ⚙️ **9 AI Tools** | Full function-calling agent | add_task, prioritize, complete, schedule, reminders, goal breakdown, risk detection |
 
-<details>
-<summary><b>▶ All 9 AI Function Tools</b></summary>
+### All 9 AI Function Tools
 
 | Tool | What it does |
 |------|-------------|
@@ -115,8 +115,6 @@ graph LR
 | `suggest_proactive_actions` | 5-pass workload analysis (overdue, upcoming, focus, goals, large tasks) |
 | `break_down_goal` | Splits goals → proportional weekly tasks with deadline distribution |
 | `reschedule_at_risk_tasks` | Identifies tasks inside risk window, proposes extended deadlines |
-
-</details>
 
 ---
 
