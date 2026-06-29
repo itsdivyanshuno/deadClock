@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     }
 
     const db = await getDB();
-    await db.exec(`
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS reflections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         wentWell TEXT NOT NULL,
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   try {
     const db = await getDB();
-    await db.exec(`
+    await db.execute(`
       CREATE TABLE IF NOT EXISTS reflections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         wentWell TEXT NOT NULL,
