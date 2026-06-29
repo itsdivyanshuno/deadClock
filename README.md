@@ -281,21 +281,21 @@ Open **http://localhost:3000**
 
 | Chat | Dashboard | Tasks |
 |------|-----------|-------|
-| *<img src="docs/screenshots/chat-mobile.png" width="200" />* | *<img src="docs/screenshots/dashboard-mobile.png" width="200" />* | *<img src="docs/screenshots/tasks-mobile.png" width="200" />* |
+| *<img src="public/screenshots/chat-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/dashboard-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/tasks-mobile.png" loading="lazy" width="200" />* |
 
 | Heatmap | Goals | Analytics | Sidebar |
 |---------|-------|-----------|---------|
-| *<img src="docs/screenshots/heatmap-mobile.png" width="200" />* | *<img src="docs/screenshots/goals-mobile.png" width="200" />* | *<img src="docs/screenshots/analytics-mobile.png" width="200" />* | *<img src="docs/screenshots/sidebar-mobile.png" width="200" />* |
+| *<img src="public/screenshots/heatmap-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/goals-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/analytics-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/sidebar-mobile.png" loading="lazy" width="200" />* |
 
 ### Desktop
 
 | Dashboard | Chat |
 |-----------|------|
-| *<img src="docs/screenshots/dashboard.png" width="400" />* | *<img src="docs/screenshots/chat.png" width="400" />* |
+| *<img src="public/screenshots/dashboard.png" loading="lazy" width="400" />* | *<img src="public/screenshots/chat.png" loading="lazy" width="400" />* |
 
 | Analytics | Heatmap | Tasks | Goals |
 |-----------|---------|-------|-------|
-| *<img src="docs/screenshots/analytics.png" width="400" />* | *<img src="docs/screenshots/heatmap.png" width="400" />* | *<img src="docs/screenshots/tasks.png" width="400" />* | *<img src="docs/screenshots/goals.png" width="400" />* |
+| *<img src="public/screenshots/analytics.png" loading="lazy" width="400" />* | *<img src="public/screenshots/heatmap.png" loading="lazy" width="400" />* | *<img src="public/screenshots/tasks.png" loading="lazy" width="400" />* | *<img src="public/screenshots/goals.png" loading="lazy" width="400" />* |
 
 ---
 
