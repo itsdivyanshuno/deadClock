@@ -39,10 +39,6 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // Clamp today to the grid so future cells don't render as active
-  const gridEnd = new Date(today);
-  gridEnd.setDate(gridEnd.getDate() - ((gridEnd.getDay() + 6) % 7) + WEEKS * 7 - 1);
-
   // Build a lookup map from date-string to log data
   const logMap = new Map<string, DailyLog>();
   for (const log of dailyLogs) {
@@ -52,10 +48,13 @@ export function HeatmapView({ dailyLogs }: HeatmapViewProps) {
   // Generate week columns, each starting on Monday
   const columns: Array<Array<{ date: Date; dateStr: string; log?: DailyLog }>> = [];
 
-  // Start from the Monday of the week that contains the grid start
-  const gridStart = new Date(gridEnd);
-  gridStart.setDate(gridStart.getDate() - WEEKS * 7 + 1); // Monday of first week
-  gridStart.setDate(gridStart.getDate() - ((gridStart.getDay() + 6) % 7));
+  // Grid start = Monday of the week (WEEKS-1) weeks ago.
+  // Was buggy: added WEEKS*7 days into the future, pushing the entire grid
+  // past today so all seed activity (Jun 9–28) fell outside the visible window.
+  const gridStart = new Date(today);
+  gridStart.setDate(
+    gridStart.getDate() - ((gridStart.getDay() + 6) % 7) - (WEEKS - 1) * 7
+  );
 
   for (let w = 0; w < WEEKS; w++) {
     const weekCol: Array<{ date: Date; dateStr: string; log?: DailyLog }> = [];
