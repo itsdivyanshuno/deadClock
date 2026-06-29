@@ -72,7 +72,13 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
           if (data.tasks) setTasks(data.tasks);
           if (data.goals) setGoals(data.goals);
           if (data.toolCalled) setToolActive(true);
-          if (data.messages && data.messages.length > 0) setMessages(data.messages);
+          if (data.chatHistory && data.chatHistory.length > 0)
+    setMessages(
+      data.chatHistory.map((m: { role: string; content: string }) => ({
+        role: m.role === "model" ? "assistant" : m.role,
+        content: m.content,
+      }))
+    );
         }
         const analyticsRes = await fetch("/api/analytics");
         if (analyticsRes.ok) {
