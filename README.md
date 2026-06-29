@@ -278,6 +278,16 @@ Open **http://localhost:3000**
 |-----------|---------|-------|-------|
 | *<img src="docs/screenshots/analytics.png" width="400" />* | *<img src="docs/screenshots/heatmap.png" width="400" />* | *<img src="docs/screenshots/tasks.png" width="400" />* | *<img src="docs/screenshots/goals.png" width="400" />* |
 
+### Mobile
+
+| Chat | Dashboard | Tasks |
+|------|-----------|-------|
+| *<img src="docs/screenshots/chat.png" width="200" />* | *<img src="docs/screenshots/dashboard-mobile.png" width="200" />* | *<img src="docs/screenshots/tasks-mobile.png" width="200" />* |
+
+| Heatmap | Goals | Analytics | Sidebar |
+|---------|-------|-----------|---------|
+| *<img src="docs/screenshots/heatmap-mobile.png" width="200" />* | *<img src="docs/screenshots/goals-mobile.png" width="200" />* | *<img src="docs/screenshots/analytics-mobile.png" width="200" />* | *<img src="docs/screenshots/sidebar-mobile.png" width="200" />* |
+
 ---
 
 ## Technical Differentiators
