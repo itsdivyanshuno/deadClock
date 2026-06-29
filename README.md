@@ -282,7 +282,7 @@ Open **http://localhost:3000**
 
 | Chat | Dashboard | Tasks |
 |------|-----------|-------|
-| *<img src="docs/screenshots/chat.png" width="200" />* | *<img src="docs/screenshots/dashboard-mobile.png" width="200" />* | *<img src="docs/screenshots/tasks-mobile.png" width="200" />* |
+| *<img src="docs/screenshots/chat-mobile.png" width="200" />* | *<img src="docs/screenshots/dashboard-mobile.png" width="200" />* | *<img src="docs/screenshots/tasks-mobile.png" width="200" />* |
 
 | Heatmap | Goals | Analytics | Sidebar |
 |---------|-------|-----------|---------|
