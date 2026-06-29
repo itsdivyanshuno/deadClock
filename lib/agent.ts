@@ -22,18 +22,30 @@ import { loadState, saveState } from "./db";
 // Configuration
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Gemini API key loaded from the server environment (injected by Next.js). */
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY!;
-
 /**
- * Singleton Gemini client.
+ * Lazily-initialised Gemini client factory.
  *
- * Created at module scope because the SDK manages its own internal connection
- * pool; creating one instance per request is unnecessary and would add latency.
+ * Created on first call (at request time) rather than at module import time
+ * so that Vercel's serverless environment — which may inject env vars after
+ * module caching — always sees a fully-populated key.
  *
- * @type {GoogleGenAI}
+ * @returns {GoogleGenAI}
  */
-const ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+let ai: GoogleGenAI | null = null;
+
+function getGeminiClient(): GoogleGenAI {
+  if (!ai) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error(
+        "GEMINI_API_KEY is not set in the server environment. " +
+        "Add it in your Vercel dashboard under Settings > Environment Variables."
+      );
+    }
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Type definitions
@@ -811,7 +823,7 @@ let classified: ClassifiedError | null = null;
 try {
   // Step 3: Ask Gemini to generate a response (potentially with tool calls).
   const response = await callGeminiWithRetry(() =>
-    ai.models.generateContent({
+    getGeminiClient().models.generateContent({
       model: "gemini-2.5-flash",
       config: {
         tools: taskTools as any,
@@ -845,7 +857,7 @@ try {
 
     // Ask Gemini to compose a human-readable follow-up after seeing tool results.
     const followUp = await callGeminiWithRetry(() =>
-      ai.models.generateContent({
+      getGeminiClient().models.generateContent({
         model: "gemini-2.5-flash",
         contents: [
           ...messages,
