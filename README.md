@@ -21,6 +21,7 @@ An agentic AI that **doesn't just suggest — it acts**. Chat naturally and watc
 [![Live on Vercel](https://img.shields.io/badge/Live-deadclockai.vercel.app-000?style=for-the-badge&logo=vercel&logoColor=white)](https://deadclockai.vercel.app/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-itsdivyanshuno%2FdeadClock-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/itsdivyanshuno/deadClock)
 <a href="https://deadclockai.vercel.app/Your-Last-Minute-Deadline-Safety-Net.pdf" target="_blank" rel="noopener noreferrer">![Submission PDF](https://img.shields.io/badge/Submission-PDF-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)</a>
+<a href="https://docs.google.com/document/d/1GT-KcboVR2tIxShYSwgf3c_qxyKLu1yVtvpxQ6-lpow/edit?usp=sharing" target="_blank" rel="noopener noreferrer">![Submission Doc](https://img.shields.io/badge/Submission-Doc-4285F4?style=for-the-badge&logo=googledocs&logoColor=white)</a>
 
 </div>
 
