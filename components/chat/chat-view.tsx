@@ -165,6 +165,33 @@ export function ChatView({ messages, input, loading, toolActive, onInputChange, 
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // Keep the input visible above the keyboard (mobile Safari/Chrome fix)
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+
+    const ensureVisible = () => {
+      el.scrollIntoView({ block: "end", behavior: "smooth" });
+    };
+
+    el.addEventListener("focus", ensureVisible);
+
+    // Fallback for browsers that don't support dvh or have buggy resize behavior
+    const vv = window.visualViewport;
+    if (vv) {
+      const onResize = () => ensureVisible();
+      vv.addEventListener("resize", onResize);
+      vv.addEventListener("scroll", onResize);
+      return () => {
+        el.removeEventListener("focus", ensureVisible);
+        vv.removeEventListener("resize", onResize);
+        vv.removeEventListener("scroll", onResize);
+      };
+    }
+
+    return () => el.removeEventListener("focus", ensureVisible);
+  }, []);
+
   // Auto-grow textarea as the user types (max ~6 rows / max-h-32)
   useEffect(() => {
     const el = textareaRef.current;

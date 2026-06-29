@@ -128,7 +128,7 @@ export function Sidebar({
       layout
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
       className={cn(
-        "h-screen border-r border-border bg-sidebar flex flex-col shrink-0 overflow-hidden",
+        "h-dvh border-r border-border bg-sidebar flex flex-col shrink-0 overflow-hidden",
         collapsed ? "w-[68px]" : "w-[240px]"
       )}
       aria-label="Main navigation"
