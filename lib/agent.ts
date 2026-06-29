@@ -796,7 +796,7 @@ export async function chat(userMessage: string) {
   // Step 1: Load the persisted state as our starting point for this turn.
 // `loadState` is imported from a CommonJS module (lib/db.js), so TypeScript
 // sees its return as `any`; cast it for type safety.
-const rawState = loadState() as { tasks: Task[]; goals: Goal[]; chatHistory: Message[] };
+const rawState = await loadState() as { tasks: Task[]; goals: Goal[]; chatHistory: Message[] };
 const state: TaskStore = {
   tasks: rawState.tasks,
   goals: rawState.goals,
@@ -909,9 +909,9 @@ return { response: fullResponse, tasks: finalTasks, goals: finalGoals, toolCalle
  * @returns {{ tasks: Task[]; goals: Goal[]; chatHistory: Message[] }}
  * A read-only snapshot of the SQLite store.
  */
-export function getStore() {
+export async function getStore() {
   // `loadState` returns `any` (CommonJS module); cast for downstream type safety.
-  const raw = loadState() as { tasks: Task[]; goals: Goal[]; chatHistory: Message[] };
+  const raw = await loadState() as { tasks: Task[]; goals: Goal[]; chatHistory: Message[] };
   return {
     tasks: raw.tasks,
     goals: raw.goals,

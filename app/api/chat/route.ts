@@ -99,6 +99,6 @@ export async function POST(req: NextRequest) {
  *   @property {Message[]} chatHistory - Full conversation history (live data from DB).
  */
 export async function GET() {
-  const store = getStore();
+  const store = await getStore();
   return NextResponse.json(store);
 }

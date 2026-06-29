@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    recordCompletion(task);
+    await recordCompletion(task);
 
     return NextResponse.json({ ok: true });
   } catch (error: any) {

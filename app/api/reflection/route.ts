@@ -24,8 +24,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const db = getDB();
-    db.exec(`
+    const db = await getDB();
+    await db.exec(`
       CREATE TABLE IF NOT EXISTS reflections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         wentWell TEXT NOT NULL,
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
     const stmt = db.prepare(
       "INSERT INTO reflections (wentWell, toImprove, tomorrowFocus, mood) VALUES (?, ?, ?, ?)"
     );
-    const result = stmt.run(
+    const result = await stmt.run(
       wentWell.trim(),
       toImprove.trim(),
       tomorrowFocus.trim(),
@@ -58,8 +58,8 @@ export async function POST(req: NextRequest) {
 
 export async function GET() {
   try {
-    const db = getDB();
-    db.exec(`
+    const db = await getDB();
+    await db.exec(`
       CREATE TABLE IF NOT EXISTS reflections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         wentWell TEXT NOT NULL,
@@ -70,7 +70,7 @@ export async function GET() {
       )
     `);
 
-    const rows = db
+    const rows = await db
       .prepare(
         "SELECT id, wentWell, toImprove, tomorrowFocus, mood, createdAt FROM reflections ORDER BY createdAt DESC LIMIT 50"
       )

@@ -14,13 +14,13 @@ export async function GET() {
   try {
     const snapshot = {
       streaks: {
-        current: getCurrentStreak(),
-        longest: getLongestStreak(),
-        totalCompletions: getTotalCompletions(),
+        current: await getCurrentStreak(),
+        longest: await getLongestStreak(),
+        totalCompletions: await getTotalCompletions(),
       },
-      heatmap: getHeatmapData(),
-      dailyLogs: getDailyLogs(30),
-      achievements: getAchievements(),
+      heatmap: await getHeatmapData(),
+      dailyLogs: await getDailyLogs(30),
+      achievements: await getAchievements(),
     };
     return NextResponse.json(snapshot);
   } catch (error: any) {
