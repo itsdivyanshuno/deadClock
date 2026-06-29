@@ -270,14 +270,6 @@ Open **http://localhost:3000**
 
 ## Screenshots
 
-| Dashboard | Chat |
-|-----------|------|
-| *<img src="docs/screenshots/dashboard.png" width="400" />* | *<img src="docs/screenshots/chat.png" width="400" />* |
-
-| Analytics | Heatmap | Tasks | Goals |
-|-----------|---------|-------|-------|
-| *<img src="docs/screenshots/analytics.png" width="400" />* | *<img src="docs/screenshots/heatmap.png" width="400" />* | *<img src="docs/screenshots/tasks.png" width="400" />* | *<img src="docs/screenshots/goals.png" width="400" />* |
-
 ### Mobile
 
 | Chat | Dashboard | Tasks |
@@ -287,6 +279,16 @@ Open **http://localhost:3000**
 | Heatmap | Goals | Analytics | Sidebar |
 |---------|-------|-----------|---------|
 | *<img src="docs/screenshots/heatmap-mobile.png" width="200" />* | *<img src="docs/screenshots/goals-mobile.png" width="200" />* | *<img src="docs/screenshots/analytics-mobile.png" width="200" />* | *<img src="docs/screenshots/sidebar-mobile.png" width="200" />* |
+
+### Desktop
+
+| Dashboard | Chat |
+|-----------|------|
+| *<img src="docs/screenshots/dashboard.png" width="400" />* | *<img src="docs/screenshots/chat.png" width="400" />* |
+
+| Analytics | Heatmap | Tasks | Goals |
+|-----------|---------|-------|-------|
+| *<img src="docs/screenshots/analytics.png" width="400" />* | *<img src="docs/screenshots/heatmap.png" width="400" />* | *<img src="docs/screenshots/tasks.png" width="400" />* | *<img src="docs/screenshots/goals.png" width="400" />* |
 
 ---
 
