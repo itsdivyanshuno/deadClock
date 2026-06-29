@@ -132,7 +132,7 @@ graph TD
 | **Framework** | Next.js 16 + Turbopack (App Router, Server Components) |
 | **Language** | TypeScript 5 + React 19 |
 | **AI Engine** | Google Gemini (`@google/genai` 2.10, `gemini-2.5-flash`) |
-| **Database** | SQLite via `better-sqlite3` (6 tables, atomic transactions) |
+| **Database** | SQLite via `@libsql/client` (Turso/libSQL, 6 tables, atomic transactions) |
 | **Styling** | Tailwind CSS v4 (`@tailwindcss/postcss`) |
 | **Animations** | Framer Motion 12 |
 | **UI Primitives** | shadcn/ui + Base UI (Radix under the hood) |
@@ -214,8 +214,8 @@ deadClock/
 │   ├── types.ts          ← Canonical View type
 │   └── utils.ts          ← cn() + 6-tier hover system
 └── scripts/
-    ├── seed-dummy-data.js         ← Professional persona seed
-    └── seed-student-dummy-data.js ← Student persona (42 tasks, 3 goals, 21-day analytics)
+├── seed-turso.js ← Seed Turso/libSQL database with demo data
+└── seed-student-dummy-data.js ← Student persona (21 tasks, 3 goals, 21-day analytics)
 ```
 
 ---
@@ -230,19 +230,31 @@ cd deadClock
 # 2. Install
 npm install
 
-# 3. Add your Gemini API key (get one free at https://aistudio.google.com)
+# 3. Add env vars (get Gemini key free at https://aistudio.google.com)
 cp .env.local.example .env.local
-# paste in: GEMINI_API_KEY=your_key
+# Required:
+#   GEMINI_API_KEY=your_key
+# Optional (for Turso cloud DB instead of local fallback):
+#   TURSO_DB_URL=libsql://your-db.turso.io
+#   TURSO_DB_TOKEN=your-token
 
-# 4. Optional: seed with demo data
-node scripts/seed-student-dummy-data.js   # student persona (42 tasks, 3 goals)
-node scripts/seed-dummy-data.js            # professional persona (13 tasks, 2 goals)
-
-# 5. Dev server (Turbopack)
+# 4. Dev server (Turbopack)
 npm run dev
 ```
 
-Open **http://localhost:3000**
+Open **http://localhost:3000** — uses a local `.local.db` file by default.
+
+### Seed Demo Data
+
+```bash
+# Seed Turso cloud database
+export TURSO_DB_URL=libsql://your-db.turso.io
+export TURSO_DB_TOKEN=your-token
+node scripts/seed-turso.js
+
+# Seed local database (no env vars needed)
+node scripts/seed-student-dummy-data.js   # student persona (21 tasks, 3 goals)
+```
 
 > *"I have an exam Friday, a presentation tomorrow, and three assignments due. Help me plan."*
 
@@ -308,6 +320,8 @@ Open **http://localhost:3000**
 - **50+ CSS design tokens** — instant dark mode via token inversion, custom scrollbars, animated skeletons
 - **21-day analytics backfill** — realistic seed script generates consecutive daily_logs with rest days, correct streaks and focus minutes
 - **Type-safe** TypeScript 5 strict mode — `any` isolated to CJS `lib/db.js` boundary only
+- **Dual DB support** — local SQLite fallback for dev, Turso/libSQL for production zero-config deploy
+- **Mobile keyboard fix** — `dvh` dynamic viewport units fix iOS keyboard nav bar occlusion bug
 
 ---
 
@@ -354,6 +368,8 @@ The client never touches the DB directly.
 [x] Command palette with vim-style shortcuts
 [x] Dark mode + premium animations
 [x] Realistic seed data (21-day analytics backfill)
+[x] Turso/libSQL migration — local fallback + production cloud DB
+[x] Mobile keyboard fix — dynamic viewport height (dvh)
 [ ] Multi-user auth + cloud sync (Supabase / Firebase)
 [ ] Team workspaces
 [ ] Calendar sync (Google Calendar / Outlook)
