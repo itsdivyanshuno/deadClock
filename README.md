@@ -2,7 +2,7 @@
 
 <img src="public/clock-icon.svg" alt="deadClock" width="80" style="display:block; margin: 0 auto 1rem;" />
 
-# deadClock
+<span style="display:inline-block; background:#0f172a; color:#e2e8f0; font-weight:800; font-size:2.1rem; padding:6px 16px; border-radius:10px; letter-spacing:-0.03em; font-family:system-ui,sans-serif;"><span style="color:#94a3b8;">dead</span><span style="color:#ef4444;">Clock</span></span> ⏰
 
 ### Your last-minute deadline safety net, powered by an autonomous AI agent.
 
