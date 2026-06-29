@@ -97,10 +97,10 @@ Array<{ date: string; tasksCompleted: number; focusMinutes: number }>
           });
           setDailyLogs(snapshot.dailyLogs ?? []);
           setHeatmapData(
-    (snapshot.heatmap ?? []).map((h: { date: string; count: number }) => ({
+    (snapshot.heatmap ?? []).map((h: { date: string; count: number; focusMinutes: number }) => ({
       date: h.date,
       tasksCompleted: h.count,
-      focusMinutes: 0,
+      focusMinutes: h.focusMinutes || 0,
     }))
   );
         }
