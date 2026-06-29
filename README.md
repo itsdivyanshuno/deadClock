@@ -365,7 +365,19 @@ The client never touches the DB directly.
 
 ## License
 
-MIT — built with 💀 for [Vibe2Ship 2026](https://vibe2ship.dev)
+MIT — built with ❤️ for [Vibe2Ship 2026](https://vibe2ship.dev)
+
+---
+
+<div align="center">
+
+**deadClock** is open-source and free to use. Whether you're a student cramming for finals, a professional juggling deadlines, or a builder exploring agentic AI — we built this to prove that AI can genuinely reduce stress, not just add features.
+
+⭐ Star the repo if it helped you stay on track.
+
+[⬆ Back to top](#-deadclock)
+
+</div>
 
 [⬆ Back to top](#-deadclock)
 
