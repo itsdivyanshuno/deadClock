@@ -281,21 +281,21 @@ Open **http://localhost:3000**
 
 | Chat | Dashboard | Tasks |
 |------|-----------|-------|
-| *<img src="public/screenshots/chat-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/dashboard-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/tasks-mobile.png" loading="lazy" width="200" />* |
+| *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/chat-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/dashboard-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/tasks-mobile.png" loading="lazy" width="200" />* |
 
 | Heatmap | Goals | Analytics | Sidebar |
 |---------|-------|-----------|---------|
-| *<img src="public/screenshots/heatmap-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/goals-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/analytics-mobile.png" loading="lazy" width="200" />* | *<img src="public/screenshots/sidebar-mobile.png" loading="lazy" width="200" />* |
+| *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/heatmap-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/goals-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/analytics-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/sidebar-mobile.png" loading="lazy" width="200" />* |
 
 ### Desktop
 
 | Dashboard | Chat |
 |-----------|------|
-| *<img src="public/screenshots/dashboard.png" loading="lazy" width="400" />* | *<img src="public/screenshots/chat.png" loading="lazy" width="400" />* |
+| *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/dashboard.png" loading="lazy" width="400" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/chat.png" loading="lazy" width="400" />* |
 
 | Analytics | Heatmap | Tasks | Goals |
 |-----------|---------|-------|-------|
-| *<img src="public/screenshots/analytics.png" loading="lazy" width="400" />* | *<img src="public/screenshots/heatmap.png" loading="lazy" width="400" />* | *<img src="public/screenshots/tasks.png" loading="lazy" width="400" />* | *<img src="public/screenshots/goals.png" loading="lazy" width="400" />* |
+| *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/analytics.png" loading="lazy" width="400" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/heatmap.png" loading="lazy" width="400" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/tasks.png" loading="lazy" width="400" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/goals.png" loading="lazy" width="400" />* |
 
 ---
 
