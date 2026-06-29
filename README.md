@@ -13,7 +13,7 @@
 
 An agentic AI that **doesn't just suggest — it acts**. Chat naturally and watch it plan, prioritize, break down goals, and warn you before deadlines hit.
 
-[Demo Video](#) · [Live](https://deadclock.vercel.app) · [Report](https://github.com/itsdivyanshuno/deadClock)
+[Live](https://deadclockai.vercel.app/) · [Report](https://github.com/itsdivyanshuno/deadClock) · [Submission PDF](https://github.com/itsdivyanshuno/deadClock/blob/main/docs/Your-Last-Minute-Deadline-Safety-Net.pdf)
 
 </div>
 
