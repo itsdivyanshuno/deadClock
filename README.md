@@ -26,6 +26,12 @@ An agentic AI that **doesn't just suggest — it acts**. Chat naturally and watc
 
 </div>
 
+## Preview
+
+| Chat | Dashboard | Tasks |
+|------|-----------|-------|
+| *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/chat-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/dashboard-mobile.png" loading="lazy" width="200" />* | *<img src="https://raw.githubusercontent.com/itsdivyanshuno/deadClock/main/public/screenshots/tasks-mobile.png" loading="lazy" width="200" />* |
+
 ---
 
 ## The Problem
