@@ -1,19 +1,26 @@
 <div align="center">
 
-<img src="public/clock-icon.svg" alt="deadClock" width="30" style="vertical-align: middle; margin-right: 0.25rem;" /> **deadClock**
+<img src="public/clock-icon.svg" alt="deadClock" width="80" style="display:block; margin: 0 auto 1rem;" />
 
-![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs)
-![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript)
-![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-FF0080?style=for-the-badge)
-![Tailwind v4](https://img.shields.io/badge/Tailwind_v4-38BDF8?style=for-the-badge&logo=tailwind-css)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite)
+# deadClock
 
 ### Your last-minute deadline safety net, powered by an autonomous AI agent.
 
 An agentic AI that **doesn't just suggest — it acts**. Chat naturally and watch it plan, prioritize, break down goals, and warn you before deadlines hit.
 
-[Live](https://deadclockai.vercel.app/) · [Report](https://github.com/itsdivyanshuno/deadClock) · [Submission PDF](https://github.com/itsdivyanshuno/deadClock/blob/main/docs/Your-Last-Minute-Deadline-Safety-Net.pdf)
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white&labelColor=000)](https://nextjs.org/)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white&labelColor=4285F4)](https://ai.google.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=3178C6)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=000&labelColor=61DAFB)](https://react.dev/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-FF0080?style=for-the-badge&logo=framer&logoColor=white&labelColor=FF0080)](https://www.framer.com/motion/)
+[![Tailwind](https://img.shields.io/badge/Tailwind_v4-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=000&labelColor=38BDF8)](https://tailwindcss.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white&labelColor=003B57)](https://www.sqlite.org/)
+
+<br/>
+
+[![Live on Vercel](https://img.shields.io/badge/Live-deadclockai.vercel.app-000?style=for-the-badge&logo=vercel&logoColor=white)](https://deadclockai.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-itsdivyanshuno%2FdeadClock-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/itsdivyanshuno/deadClock)
+[![Submission PDF](https://img.shields.io/badge/Submission-PDF-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/itsdivyanshuno/deadClock/blob/main/docs/Your-Last-Minute-Deadline-Safety-Net.pdf)
 
 </div>
 
