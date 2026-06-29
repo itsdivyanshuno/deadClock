@@ -1,6 +1,6 @@
 <div align="center">
 
-# deadClock
+<img src="public/clock-icon.svg" alt="deadClock" width="30" style="vertical-align: middle; margin-right: 0.25rem;" /> **deadClock**
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs)
 ![Gemini](https://img.shields.io/badge/Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google)
@@ -45,7 +45,7 @@ No forms. No manual sorting. No "workspace setup." Just chat.
 <div align="center">
 
 ```mermaid
-graph LR
+graph TD
     A[👤 User] -->|Natural language| B[Next.js API]
     B -->|Full history| C[🤖 Gemini 2.5 Flash]
     C -->|Function Calls| D[⚙️ 9 AI Tools]
@@ -346,7 +346,7 @@ The client never touches the DB directly.
 
 ## License
 
-MIT — built with 💀 for Vibe2Ship
+MIT — built with 💀 for [Vibe2Ship 2026](https://vibe2ship.dev)
 
 [⬆ Back to top](#-deadclock)
 
