@@ -2,41 +2,25 @@
 
 <img src="public/clock-icon.svg" alt="deadClock" width="80" style="display:block; margin: 0 auto 1rem;" />
 
-<span style="display:inline-block; background:#0f172a; color:#e2e8f0; font-weight:800; font-size:2.1rem; padding:6px 16px; border-radius:10px; letter-spacing:-0.03em; font-family:system-ui,sans-serif;"><span style="color:#94a3b8;">dead</span><span style="color:#ef4444;">Clock</span></span> ⏰
+# deadClock
 
 ### Your last-minute deadline safety net, powered by an autonomous AI agent.
 
 An agentic AI that **doesn't just suggest — it acts**. Chat naturally and watch it plan, prioritize, break down goals, and warn you before deadlines hit.
 
-<!-- tech badges -->
-<table align="center" cellspacing="6" cellpadding="0">
-<tr>
-<td colspan="8" align="center" style="padding-bottom:8px; font-size:0.8rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.08em; font-weight:700;">Tech Stack</td>
-</tr>
-<tr>
-<td align="center"><a href="https://nextjs.org/" style="display:inline-block; background:#000; color:#fff; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:600; font-size:0.82rem;">▲ Next.js 16</a></td>
-<td align="center"><a href="https://ai.google.dev/" style="display:inline-block; background:#0F172A; color:#fff; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:600; font-size:0.82rem;">G Gemini 2.5 Flash</a></td>
-<td align="center"><a href="https://www.typescriptlang.org/" style="display:inline-block; background:#0F172A; color:#3178C6; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:700; font-size:0.82rem;">TS TypeScript 5</a></td>
-<td align="center"><a href="https://react.dev/" style="display:inline-block; background:#0F172A; color:#61DAFB; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:700; font-size:0.82rem;">⚛ React 19</a></td>
-<td align="center"><a href="https://www.framer.com/motion/" style="display:inline-block; background:#0F172A; color:#FF0080; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:600; font-size:0.82rem;">◐ Framer Motion 12</a></td>
-<td align="center"><a href="https://tailwindcss.com/" style="display:inline-block; background:#0F172A; color:#38BDF8; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:600; font-size:0.82rem;">◆ Tailwind CSS v4</a></td>
-<td align="center"><a href="https://www.sqlite.org/" style="display:inline-block; background:#003B57; color:#fff; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:600; font-size:0.82rem;">◆ SQLite</a></td>
-<td align="center"><a href="https://ui.shadcn.com/" style="display:inline-block; background:#fff; color:#000; text-decoration:none; padding:7px 14px; border-radius:6px; font-weight:700; font-size:0.82rem; border:1px solid #e2e8f0;">◐ shadcn/ui</a></td>
-</tr>
-</table>
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white&labelColor=000)](https://nextjs.org/)
+[![Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-4285F4?style=for-the-badge&logo=google&logoColor=white&labelColor=4285F4)](https://ai.google.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white&labelColor=3178C6)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=000&labelColor=61DAFB)](https://react.dev/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-FF0080?style=for-the-badge&logo=framer&logoColor=white&labelColor=FF0080)](https://www.framer.com/motion/)
+[![Tailwind](https://img.shields.io/badge/Tailwind_v4-38BDF8?style=for-the-badge&logo=tailwind-css&logoColor=000&labelColor=38BDF8)](https://tailwindcss.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white&labelColor=003B57)](https://www.sqlite.org/)
+
 <br/>
 
-<!-- action buttons -->
-<table align="center" cellspacing="8" cellpadding="0">
-<tr>
-<td colspan="3" align="center" style="padding-bottom:8px; font-size:0.8rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.08em; font-weight:700;">Project Links</td>
-</tr>
-<tr>
-<td align="center"><a href="https://deadclockai.vercel.app/" style="display:inline-block; background:#000; color:#fff; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:700; font-size:1rem; letter-spacing:0.02em;">🚀 Live Site</a></td>
-<td align="center"><a href="https://github.com/itsdivyanshuno/deadClock" style="display:inline-block; background:#181717; color:#fff; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:700; font-size:1rem; letter-spacing:0.02em;">💻 GitHub Repo</a></td>
-<td align="center"><a href="https://github.com/itsdivyanshuno/deadClock/blob/main/docs/Your-Last-Minute-Deadline-Safety-Net.pdf" style="display:inline-block; background:#991B1B; color:#fff; text-decoration:none; padding:12px 24px; border-radius:8px; font-weight:700; font-size:1rem; letter-spacing:0.02em;">📄 Submission PDF</a></td>
-</tr>
-</table>
+[![Live on Vercel](https://img.shields.io/badge/Live-deadclockai.vercel.app-000?style=for-the-badge&logo=vercel&logoColor=white)](https://deadclockai.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-itsdivyanshuno%2FdeadClock-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/itsdivyanshuno/deadClock)
+[![Submission PDF](https://img.shields.io/badge/Submission-PDF-red?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://github.com/itsdivyanshuno/deadClock/blob/main/docs/Your-Last-Minute-Deadline-Safety-Net.pdf)
 
 </div>
 
@@ -46,7 +30,8 @@ An agentic AI that **doesn't just suggest — it acts**. Chat naturally and watc
 
 **Productivity apps are passive lists that wait for you to panic.** Most task managers give you an empty box and call it "planning."
 
-When you're drowning in deadlines, staring at 47 unchecked items only adds stress — it doesn't remove it. You still have to organize, prioritize, and *remember*.
+When you're drowning in deadlines, staring at 47 unchecked items only adds stress — it doesn't remove it.
+You still have to organize, prioritize, and *remember*.
 
 > **deadClock asks a different question: what if your productivity app worked *for* you, not the other way around?**
 
@@ -57,9 +42,9 @@ When you're drowning in deadlines, staring at 47 unchecked items only adds stres
 **deadClock** is a conversation-first AI agent that actively manages your workload using **Google Gemini function calling**.
 
 ```
-You: "I have a thesis Friday, a presentation tomorrow, and 3 reports due."
+You:  "I have a thesis Friday, a presentation tomorrow, and 3 reports due."
 deadClock: Creates tasks → prioritizes by urgency → generates a time-blocked schedule
-→ breaks down long-term goals → warns about at-risk deadlines → Done.
+           → breaks down long-term goals → warns about at-risk deadlines → Done.
 ```
 
 No forms. No manual sorting. No "workspace setup." Just chat.
@@ -68,18 +53,18 @@ No forms. No manual sorting. No "workspace setup." Just chat.
 
 ```mermaid
 graph TD
-A[👤 User] -->|Natural language| B[Next.js API]
-B -->|Full history| C[🤖 Gemini 2.5 Flash]
-C -->|Function Calls| D[⚙️ 9 AI Tools]
-D -->|CRUD| E[(🗄️ SQLite)]
-E -->|State| F[📊 Live UI Updates]
-C -->|Follow-up text| A
+    A[👤 User] -->|Natural language| B[Next.js API]
+    B -->|Full history| C[🤖 Gemini 2.5 Flash]
+    C -->|Function Calls| D[⚙️ 9 AI Tools]
+    D -->|CRUD| E[(🗄️ SQLite)]
+    E -->|State| F[📊 Live UI Updates]
+    C -->|Follow-up text| A
 
-style A fill:#1e293b,color:#fff
-style C fill:#4285F4,color:#fff
-style D fill:#EA580C,color:#fff
-style E fill:#0c4a6e,color:#fff
-style F fill:#16a34a,color:#fff
+    style A fill:#1e293b,color:#fff
+    style C fill:#4285F4,color:#fff
+    style D fill:#EA580C,color:#fff
+    style E fill:#0c4a6e,color:#fff
+    style F fill:#16a34a,color:#fff
 ```
 
 </div>
@@ -162,24 +147,24 @@ style F fill:#16a34a,color:#fff
 
 ```mermaid
 sequenceDiagram
-participant U as User
-participant C as Chat UI
-participant A as API Route
-participant G as Gemini Agent
-participant D as SQLite DB
+    participant U as User
+    participant C as Chat UI
+    participant A as API Route
+    participant G as Gemini Agent
+    participant D as SQLite DB
 
-U->>C: "I have 3 assignments due tomorrow"
-C->>A: POST /api/chat { message }
-A->>D: Load current state
-A->>G: System prompt + history + message
-G->>A: Function calls: add_task ×3
-A->>D: saveState() — atomic transaction
-A->>G: Tool results feed back
-G->>A: "Done — 3 tasks created with priorities"
-A->>C: { response, tasks, goals }
-C->>U: Rendered reply + updated cards
+    U->>C: "I have 3 assignments due tomorrow"
+    C->>A: POST /api/chat { message }
+    A->>D: Load current state
+    A->>G: System prompt + history + message
+    G->>A: Function calls: add_task ×3
+    A->>D: saveState() — atomic transaction
+    A->>G: Tool results feed back
+    G->>A: "Done — 3 tasks created with priorities"
+    A->>C: { response, tasks, goals }
+    C->>U: Rendered reply + updated cards
 
-Note over U,D: Proactive: next turn surfaces overdue + risk
+    Note over U,D: Proactive: next turn surfaces overdue + risk
 ```
 
 </div>
@@ -198,28 +183,39 @@ Note over U,D: Proactive: next turn surfaces overdue + risk
 deadClock/
 ├── app/
 │   ├── api/
-│   │   ├── chat/ ← POST AI chat + GET state snapshot
-│   │   ├── complete/ ← POST task completion + streak trigger
-│   │   ├── analytics/ ← GET heatmap, streaks, daily logs
-│   │   └── reflection/ ← POST + GET journal entries
-│   ├── layout.tsx ← Geist font, SEO, root shell
-│   └── page.tsx ← SPA controller + 8-view router
+│   │   ├── chat/         ← POST AI chat + GET state snapshot
+│   │   ├── complete/     ← POST task completion + streak trigger
+│   │   ├── analytics/    ← GET heatmap, streaks, daily logs
+│   │   └── reflection/   ← POST + GET journal entries
+│   ├── layout.tsx        ← Geist font, SEO, root shell
+│   └── page.tsx          ← SPA controller + 8-view router
 ├── components/
-│   ├── layout/ ← app-shell, sidebar (Clock icon brand)
-│   ├── chat/ ← AI conversation, typing + tool indicators
-│   ├── tasks/ ← Filterable cards, priority badges
-│   ├── goals/ ← Expandable goals, milestone checklists
-│   ├── dashboard/ ← Stat grid, focus card, insights
-│   ├── views/ ← Analytics, heatmap, reflection, settings
-│   └── shared/ ← Command palette, insight-card, skeletons
+│   ├── layout/
+│   │   ├── app-shell.tsx ← Responsive frame, sidebar, navbar
+│   │   └── sidebar.tsx   ← Collapsible nav, brand header
+│   ├── chat/             ← AI conversation, typing + tool indicators
+│   ├── tasks/            ← Filterable cards, priority badges, overdue styling
+│   ├── goals/            ← Expandable goals, milestone checklists
+│   ├── dashboard/        ← Stat grid, focus card, insights, urgent panel
+│   ├── views/
+│   │   ├── analytics/    ← Focus trend, category breakdown, completion rate
+│   │   ├── heatmap/      ← 6-week GitHub-style contribution grid
+│   │   ├── reflection/   ← Guided journal + mood selector
+│   │   └── settings/     ← Dark mode, shortcuts, about
+│   └── shared/
+│       ├── command-palette  ← Cmd+K search, vim-style navigation
+│       ├── insight-card     ← 4 variants + deriveInsights() engine
+│       ├── loading-skeleton ← 4 variants with staggered shimmer
+│       └── empty-state      ← Animated floating-icon placeholders
 ├── lib/
-│   ├── agent.ts ← AI agent: 9 tools, orchestrator, two-turn loop
-│   ├── db.js ← SQLite: 6 tables, CRUD, streaks, achievements
-│   ├── helpers.ts ← Sort, format, deadline utilities
-│   └── utils.ts ← cn() + 6-tier hover system
+│   ├── agent.ts          ← AI agent: 9 tools, orchestrator, two-turn loop
+│   ├── db.js             ← SQLite: 6 tables, CRUD, streaks, achievements
+│   ├── helpers.ts        ← Sort, format, deadline utilities
+│   ├── types.ts          ← Canonical View type
+│   └── utils.ts          ← cn() + 6-tier hover system
 └── scripts/
-├── seed-dummy-data.js ← Professional persona seed
-└── seed-student-dummy-data.js ← Student: 42 tasks, 3 goals, 21-day analytics
+    ├── seed-dummy-data.js         ← Professional persona seed
+    └── seed-student-dummy-data.js ← Student persona (42 tasks, 3 goals, 21-day analytics)
 ```
 
 ---
@@ -236,17 +232,17 @@ npm install
 
 # 3. Add your Gemini API key (get one free at https://aistudio.google.com)
 cp .env.local.example .env.local
-# paste: GEMINI_API_KEY=your_key
+# paste in: GEMINI_API_KEY=your_key
 
 # 4. Optional: seed with demo data
-node scripts/seed-student-dummy-data.js # student persona (42 tasks, 3 goals)
-node scripts/seed-dummy-data.js # professional persona (13 tasks, 2 goals)
+node scripts/seed-student-dummy-data.js   # student persona (42 tasks, 3 goals)
+node scripts/seed-dummy-data.js            # professional persona (13 tasks, 2 goals)
 
 # 5. Dev server (Turbopack)
 npm run dev
 ```
 
-Open **http://localhost:3000** and tell the AI about your day.
+Open **http://localhost:3000**
 
 > *"I have an exam Friday, a presentation tomorrow, and three assignments due. Help me plan."*
 
@@ -321,12 +317,12 @@ Open **http://localhost:3000** and tell the AI about your day.
 
 ```
 Chat message → POST /api/chat → agent.ts chat()
-→ loadState() from SQLite
-→ build Gemini request with system prompt + history + tools
-← Gemini returns text + function calls
-→ execute tools (mutate in-memory state)
-→ saveState() (atomic: wipe + reinsert via transaction)
-→ return { response, tasks, goals }
+  → loadState() from SQLite
+  → build Gemini request with system prompt + history + tools
+  ← Gemini returns text + function calls
+  → execute tools (mutate in-memory state)
+  → saveState() (atomic: wipe + reinsert via transaction)
+  → return { response, tasks, goals }
 
 Every state mutation flows through the agent.
 The client never touches the DB directly.
